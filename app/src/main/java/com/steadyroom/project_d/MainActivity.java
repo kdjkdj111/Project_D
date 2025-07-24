@@ -2,7 +2,11 @@ package com.steadyroom.project_d;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.util.Log;
+
+import android.view.View;
+
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +23,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 import com.google.firebase.database.FirebaseDatabase;
 
+
 public class MainActivity extends AppCompatActivity {
+    private Button btnSet;
+    private Button btnGacha;
+    private Button btnShop;
+    private Button btnChra;
+    private Button btnBag;
+    private Button btncheck;
+    private TextView textPoint;
+    private int userPoint = 0;
+    private long startTime =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +48,87 @@ public class MainActivity extends AppCompatActivity {
 
         checkAndCreateUserInDatabase();
 
+        textPoint = findViewById(R.id.text_point);
 
+        //조회 버튼 클릭 시 포인트 표시
+        btncheck = findViewById(R.id.btn_check);
+        btncheck.setOnClickListener(v -> {
+            long currentTime = System.currentTimeMillis(); //현재 시간
+            long usedTime = currentTime - startTime; // 사용한 시간
 
-        Button btnLogout = findViewById(R.id.btn_logout);
-        btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
+            int seconds = (int)(usedTime / 1000); //초 단위
+            int pointsEarn = seconds / 10; // 10초당 1점
 
-            // 로그인 화면으로 이동 후 MainActivity 종료
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            if(pointsEarn > 0){
+                addPoint(pointsEarn);
+                startTime = currentTime;
+            }else{
+                textPoint.setText("포인트: "+ userPoint + "점");
+            }
         });
+
+        updataPointText();
+
+        //클릭 시 설정으로 이동
+        btnSet = findViewById(R.id.btn_set);
+        btnSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+        //클릭 시 뽑기로 이동
+        btnGacha = findViewById(R.id.btn_gacha);
+        btnGacha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+        //클릭 시 상점으로 이동
+        btnShop = findViewById(R.id.btn_shop);
+        btnShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+        //클릭 시 캐릭터로 이동
+        btnChra = findViewById(R.id.btn_chra);
+        btnChra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+        //클릭 시 가방으로 이동
+        btnBag = findViewById(R.id.btn_bag);
+        btnBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    //앱 사용시간에 따른 포인트 지급
+    @Override
+    protected void onResume(){
+        super.onResume();
+        startTime = System.currentTimeMillis(); // 앱 복귀 시간 기록
+    }
+
+    private void updataPointText(){
+        textPoint.setText("포인트: "+ userPoint +"점");
+    }
+
+    private void addPoint(int amount){
+        userPoint += amount;
+        updataPointText();
     }
 
     public void checkAndCreateUserInDatabase() {
