@@ -5,7 +5,10 @@ plugins {
 
 }
 
+
 android {
+
+
     namespace = "com.steadyroom.project_d"
     compileSdk = 36
 
@@ -17,6 +20,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -41,6 +45,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.googleid)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -53,3 +58,4 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore") // Cloud Firestore
     implementation("androidx.credentials:credentials:1.3.0-alpha01")
 }
+
