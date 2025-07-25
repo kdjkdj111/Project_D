@@ -8,36 +8,69 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="244dp"
-        android:text="시작해봅시다."
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:layout_marginStart="270dp"
+        android:layout_marginTop="80dp"
+        android:text="포인트 : 0점"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
-        android:text="Button"
+        android:id="@+id/btn_check"
+        android:layout_width="54dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="4dp"
+        android:padding="4dp"
+        android:text="조회"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btn_logout"
+        android:id="@+id/btn_set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="로그아웃"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="설정"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/btn_gacha"
+        android:layout_width="99dp"
+        android:layout_height="42dp"
+        android:text="뽑기"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="10dp"/>
+
+    <Button
+        android:id="@+id/btn_shop"
+        android:layout_width="99dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="104dp"
+        android:text="상점"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_chra"
+        android:layout_width="99dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="208dp"
+        android:text="캐릭터"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/btn_bag"
+        android:layout_width="99dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="312dp"
+        android:text="가방"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
