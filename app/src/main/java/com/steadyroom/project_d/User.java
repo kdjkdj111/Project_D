@@ -1,11 +1,16 @@
 package com.steadyroom.project_d;
 
+import android.content.SharedPreferences;
+
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     public String user_id;
     public String nickname;
+    public int userPoint = 0;
     public List<Character> characters = new ArrayList<>();  // 빈 리스트로 초기화
     public List<Item> items = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package com.steadyroom.project_d;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -32,9 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnBag;
     private Button btncheck;
     private TextView textPoint;
-    private int userPoint = 0;
-    private long startTime =0;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,21 +52,19 @@ public class MainActivity extends AppCompatActivity {
         //조회 버튼 클릭 시 포인트 표시
         btncheck = findViewById(R.id.btn_check);
         btncheck.setOnClickListener(v -> {
-            long currentTime = System.currentTimeMillis(); //현재 시간
-            long usedTime = currentTime - startTime; // 사용한 시간
-
-            int seconds = (int)(usedTime / 1000); //초 단위
-            int pointsEarn = seconds / 10; // 10초당 1점
-
-            if(pointsEarn > 0){
-                addPoint(pointsEarn);
-                startTime = currentTime;
-            }else{
-                textPoint.setText("포인트: "+ userPoint + "점");
+            int earned = PointManager.getInstance().PointsEared();
+            if(earned > 0){
+                Toast.makeText(MainActivity.this, earned +"점이 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(MainActivity.this, "10초 이상 사용 시 포인트가 지급됩니다.", Toast.LENGTH_SHORT).show();
             }
+
+            updatePointText();
+            PointManager.getInstance().startTime();
         });
 
-        updataPointText();
+        updatePointText();
+        PointManager.getInstance().startTime();
 
         //클릭 시 설정으로 이동
         btnSet = findViewById(R.id.btn_set);
@@ -119,16 +116,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        startTime = System.currentTimeMillis(); // 앱 복귀 시간 기록
+        PointManager.getInstance().startTime();
     }
-
-    private void updataPointText(){
-        textPoint.setText("포인트: "+ userPoint +"점");
-    }
-
-    private void addPoint(int amount){
-        userPoint += amount;
-        updataPointText();
+/*
+    @Override
+    protected void onPause(){
+        super.onPause();
+        PointManager.getInstance().PointsEared();
+    }*/
+    private void updatePointText(){
+        textPoint.setText("포인트: "+ PointManager.getInstance().getUserPoint() +"점");
     }
 
     public void checkAndCreateUserInDatabase() {
@@ -158,6 +155,10 @@ public class MainActivity extends AppCompatActivity {
                     User user = snapshot.getValue(User.class);
                     Log.d("UserInit", "기존 유저 정보 불러옴: " + user.nickname);
                     // 필요한 후처리: 예) Main 화면 이동 등
+
+                    //firebase에서 포인트 가져오기
+                    PointManager.getInstance().setUserPoint(user.userPoint);  // 기존 데이터 가지고 옴
+                    updatePointText();
                 } else {
                     // 정보 없음 → 새로 생성
                     String defaultNickname = (displayName != null && !displayName.isEmpty()) ? displayName : "신규유저";
@@ -170,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("UserInit", "신규 유저 정보 DB에 저장 완료");
                                     Toast.makeText(MainActivity.this, "유저 정보가 등록되었습니다.", Toast.LENGTH_SHORT).show();
                                     // 이후 처리: 예) 초기 화면 전환 등
+
+                                    // 신규 유저 정보 확인 시 userPoint 값 0으로 설정
+                                    PointManager.getInstance().setUserPoint(0);
+                                    updatePointText();
                                 } else {
                                     Log.e("UserInit", "DB 저장 실패: " + task.getException());
                                     Toast.makeText(MainActivity.this, "유저 정보 저장 실패", Toast.LENGTH_SHORT).show();
