@@ -20,7 +20,7 @@ public class PointManager {
     private int userPoint = 0;
 
 
-    private PointManager(){}
+    public PointManager(){}
 
     // 이 클래스를 앱 전체에서 하나만 사용하도록 보장 전역적으로 공유되는 PointManager 객체를 가지고 옴
     public static PointManager getInstance(){

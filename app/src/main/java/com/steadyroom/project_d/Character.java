@@ -6,16 +6,18 @@ public class Character {
     private int hp;
     private int dirt;
     private int imageId;
+    private double appearChance;
 
     public Character() {
     }
 
-    public Character(String name, int attack, int hp, int dirt, int imageId) {
+    public Character(String name, int attack, int hp, int dirt, int imageId, double appearChance) {
         this.name = name;
         this.attack = attack;
         this.hp = hp;
         this.dirt = dirt;
         this.imageId = imageId;
+        this.appearChance = appearChance;
     }
 
     public String getName() { return name; }
@@ -31,5 +33,8 @@ public class Character {
     public void setDirt(int dirt) { this.dirt = dirt; }
     public int getImageId() { return imageId; }
     public void setImageId(int imageId) { this.imageId = imageId; }
+
+    public double getAppearChance() { return appearChance; }
+    public void setAppearChance(double appearChance) { this.appearChance = appearChance; }
 }
 

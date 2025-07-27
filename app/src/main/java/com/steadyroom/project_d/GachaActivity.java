@@ -54,13 +54,7 @@ public class GachaActivity extends AppCompatActivity {
                     finish();
                     return;
                 }
-
-                characterList = new ArrayList<>();
-                characterList.add(new Character("단데기", 10, 30, 0, R.drawable.ch1));
-                characterList.add(new Character("거북왕", 17, 40, 2, R.drawable.ch2));
-                characterList.add(new Character("어니부기", 100, 500, 10, R.drawable.ch3));
-                characterList.add(new Character("리자몽", 25, 60, 4, R.drawable.ch4));
-                characterList.add(new Character("리자드", 14, 35, 1, R.drawable.ch5));
+                
 
 
                 ViewPager2 viewPager = findViewById(R.id.shortsVP);
