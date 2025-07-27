@@ -58,7 +58,7 @@ public class GachaActivity extends AppCompatActivity {
 
 
                 ViewPager2 viewPager = findViewById(R.id.shortsVP);
-                gachaAdapter = new GachaAdapter(GachaActivity.this, characterList, currentUser, userRef);
+                gachaAdapter = new GachaAdapter(GachaActivity.this, currentUser, userRef);
                 viewPager.setAdapter(gachaAdapter);
             }
 
