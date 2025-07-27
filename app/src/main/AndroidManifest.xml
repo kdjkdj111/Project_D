@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project_D">
         <activity
+            android:name=".GachaActivity"
+            android:exported="false" />
+        <activity
             android:name=".PointManager"
             android:exported="false" />
         <activity

@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         btnGacha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                Intent intent = new Intent(MainActivity.this,GachaActivity.class);
                 startActivity(intent);
             }
         });

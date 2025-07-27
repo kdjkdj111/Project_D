@@ -57,5 +57,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0") // Google Sign-In SDK 추가
     implementation("com.google.firebase:firebase-firestore") // Cloud Firestore
     implementation("androidx.credentials:credentials:1.3.0-alpha01")
+
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.google.android.material:material:1.3.0")
+    implementation("com.google.android.exoplayer:exoplayer:2.15.1")
 }
 
