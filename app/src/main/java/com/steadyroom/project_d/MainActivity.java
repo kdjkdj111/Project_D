@@ -25,6 +25,9 @@ import com.google.firebase.database.*;
 import com.google.firebase.database.FirebaseDatabase;
 
 
+
+
+
 public class MainActivity extends AppCompatActivity {
     private Button btnSet;
     private Button btnGacha;
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         btnShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+                Intent intent = new Intent(MainActivity.this, ShopActivity.class);
                 startActivity(intent);
             }
         });
