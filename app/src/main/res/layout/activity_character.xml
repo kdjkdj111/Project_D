@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/encyclopediaButton"
+        android:id="@+id/collectButton"
         android:layout_width="80dp"
         android:layout_height="48dp"
         android:layout_marginStart="68dp"
@@ -42,7 +42,7 @@
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/backButton"
-        app:layout_constraintStart_toEndOf="@+id/encyclopediaButton"
+        app:layout_constraintStart_toEndOf="@+id/collectButton"
         app:layout_constraintTop_toTopOf="@id/backButton"
         app:layout_constraintVertical_bias="0.5" />
     <ImageView
@@ -55,8 +55,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         android:clickable = "true"
-        android:focusable="true"
-        android:contentDescription="@string/content_description_set_button"/>
+        android:focusable="true" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/characterDetailArea"
@@ -75,7 +74,6 @@
             android:layout_height="120dp"
             android:src="@drawable/ic_launcher_foreground"
             android:scaleType="fitCenter"
-            android:contentDescription="선택된 아이템 이미지"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +83,6 @@
             android:id="@+id/selectedItemDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="아이템을 선택하면 여기에 설명이 표시됩니다."
             android:textSize="16sp"
             android:textColor="@android:color/black"
             app:layout_constraintStart_toEndOf="@+id/selectedItemImage"

@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast; // 테스트용 토스트
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
-
+import android.util.Log;
 public class CollectFragment extends DialogFragment implements CollectAdapter.OnCodexEntryClickListener {
-
+    private List<CollectCharacter> collectCharacterList;
     private RecyclerView codexRecyclerView;
     private CollectAdapter codexAdapter;
     private List<CollectCharacter> allCodexEntries; // 모든 도감 항목 (획득 여부 포함)
@@ -37,8 +37,46 @@ public class CollectFragment extends DialogFragment implements CollectAdapter.On
         super.onCreate(savedInstanceState);
         // 다이얼로그 스타일 설정 (풀스크린에 가깝게)
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_NoTitleBar_Fullscreen);
-    }
 
+        collectCharacterList = new ArrayList<>();
+
+        //  CollectFragment가 Bundle을 잘 받았는지 확인하는 로그
+        if (getArguments() != null) {
+            List<Character> inventory = (List<Character>) getArguments().getSerializable("inventory");
+
+            // 여기서 inventory 리스트를 기반으로 도감용 CollectCharacter 리스트 만들어서 사용
+            //  inventory 리스트가 null이 아닌지 확인하는 로그
+            if (inventory != null) {
+                /*Log.d("CollectFragment", "인벤토리 리스트 받음. 크기: " + inventory.size());
+                if (inventory.isEmpty()) {
+                    Log.w("CollectFragment", "인벤토리 리스트가 비어 있습니다. 도감에 획득 캐릭터가 없을 수 있습니다.");
+                }*/
+
+                for (Character character : CharacterList.BASE_POOL) {
+                    boolean isAcquired = false;
+
+                    for (Character invChar : inventory) {
+                        if (character.getName().equals(invChar.getName())) {
+                            isAcquired = true;
+                            break;
+                        }
+                    }
+
+                    String displayName = isAcquired ? character.getName() : "???";
+                    int displayImageResId = isAcquired ? character.getImageId() : R.drawable.sharp_block_24;
+
+                    collectCharacterList.add(new CollectCharacter(displayName, displayImageResId, isAcquired));
+                    // 💡 collectCharacterList에 항목이 추가될 때마다 확인하는 로그
+                    /*Log.d("CollectFragment", "도감 항목 추가: " + displayName + ", 획득 여부: " + isAcquired); */
+                }
+                /*Log.d("CollectFragment", "collectCharacterList 최종 크기: " + collectCharacterList.size()); */
+            } else {
+                /*Log.w("CollectFragment", "전달받은 인벤토리 리스트가 null입니다."); */
+            }
+        } /*else {
+            Log.w("CollectFragment", "getArguments()가 null입니다. Bundle이 전달되지 않았습니다."); // <-- 이 줄을 추가
+        }*/
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,58 +94,26 @@ public class CollectFragment extends DialogFragment implements CollectAdapter.On
         super.onViewCreated(view, savedInstanceState);
 
         ImageView closeButton = view.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(v -> dismiss());
+        if (closeButton != null) { // null 체크 추가
+            closeButton.setOnClickListener(v -> dismiss());
+        } else {
+            /*Log.e("CollectFragment", "closeButton을 찾을 수 없습니다! XML ID를 확인하세요.");*/
+        }
 
         codexRecyclerView = view.findViewById(R.id.codexRecyclerView);
-        codexRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4)); // 4칸 그리드
-
-        // --- 초기 도감 데이터 설정 (테스트용) ---
-        allCodexEntries = new ArrayList<>();
-        // 예시: 미리 정의된 캐릭터 ID 목록
-        String[] characterIds = {"char_001", "char_002", "char_003", "char_004", "char_005", "char_006", "char_007", "char_008"};
-        String[] characterNames = {"ㄷㅈ", "ㅎㅈ", "ㅁㄱ", "ㄱㅈ", "ㅁㅈ", "ㅅㅇ", "ㅁㅂ", "ㅈㅇ"};
-        // R.drawable.ic_launcher_foreground 는 안드로이드 프로젝트에 기본으로 있는 아이콘입니다.
-        // 실제 캐릭터 이미지를 res/drawable 폴더에 넣고 R.drawable.your_character_image_name 처럼 사용하세요.
-        int[] characterImages = {
-                R.drawable.ic_launcher_foreground, // 예시 이미지 1
-                R.drawable.ic_launcher_foreground, // 예시 이미지 2
-                R.drawable.ic_launcher_foreground, // 예시 이미지 3
-                R.drawable.ic_launcher_foreground, // 예시 이미지 4
-                R.drawable.ic_launcher_foreground, // 예시 이미지 5
-                R.drawable.ic_launcher_foreground, // 예시 이미지 6
-                R.drawable.ic_launcher_foreground, // 예시 이미지 7
-                R.drawable.ic_launcher_foreground  // 예시 이미지 8
-        };
-
-
-        for (int i = 0; i < characterIds.length; i++) {
-            boolean acquired = (i % 2 == 0); // 짝수 번째는 획득으로 가정
-            if (acquired) {
-                allCodexEntries.add(new CollectCharacter(characterIds[i], characterNames[i], characterImages[i], true));
-            } else {
-                // 미획득 시에는 "???" 이름과 물음표 이미지 사용
-                allCodexEntries.add(new CollectCharacter(characterIds[i], "???", R.drawable.sharp_block_24, false));
-            }
+        if (codexRecyclerView != null) { // null 체크 추가
+            codexRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4)); // 4칸 그리드
+            codexAdapter = new CollectAdapter(collectCharacterList, this); // <<-- 이 부분을 이렇게 수정하세요!
+            codexRecyclerView.setAdapter(codexAdapter);
+            /*Log.d("CollectFragment", "어댑터 설정 완료. 표시할 도감 항목 수: " + collectCharacterList.size());*/
+        } else {
+            /*Log.e("CollectFragment", "codexRecyclerView를 찾을 수 없습니다! XML ID가 맞는지 확인하세요.");*/
         }
-        // --- 초기 도감 데이터 설정 끝 ---
 
-        codexAdapter = new CollectAdapter(allCodexEntries, this); // this는 OnCodexEntryClickListener 구현
-        codexRecyclerView.setAdapter(codexAdapter);
-
+        // --- 도감 데이터 생성 로직 끝 ---
         // --- 도감 진행률 업데이트 호출 ---
         updateCodexProgress(); // 초기 로드 시 진행률 업데이트
-
         // TODO: 여기서 실제 플레이어의 획득 이력을 바탕으로 allCodexEntries 리스트의 isAcquired 상태를 업데이트해야 합니다.
-        // 예: List<String> playerAcquiredCharIds = getPlayerAcquiredCharacters(); // 플레이어가 획득한 캐릭터 ID 목록을 가져오는 가상의 메서드
-        // for (CollectCharacter entry : allCodexEntries) {
-        //     if (playerAcquiredCharIds.contains(entry.getCharacterId())) {
-        //         entry.setAcquired(true);
-        //         // 실제 이름과 이미지로 업데이트 (CodexEntry에 setter 필요 시)
-        //         // entry.setDisplayName(getActualCharacterName(entry.getCharacterId()));
-        //         // entry.setDisplayImageResId(getActualCharacterImage(entry.getCharacterId()));
-        //     }
-        // }
-        // codexAdapter.notifyDataSetChanged(); // 변경된 데이터로 UI 갱신
     }
 
     @Override
@@ -133,12 +139,12 @@ public class CollectFragment extends DialogFragment implements CollectAdapter.On
     private void updateCodexProgress() {
         if (progressListener != null) {
             int acquiredCount = 0;
-            for (CollectCharacter entry : allCodexEntries) {
+            for (CollectCharacter entry : collectCharacterList) {
                 if (entry.isAcquired()) {
                     acquiredCount++;
                 }
             }
-            int totalCount = allCodexEntries.size();
+            int totalCount = collectCharacterList.size();
             progressListener.onCodexProgressUpdated(acquiredCount, totalCount);
         }
     }
