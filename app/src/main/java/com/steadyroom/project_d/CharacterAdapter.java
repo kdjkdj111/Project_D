@@ -14,13 +14,13 @@ import java.util.List; // List 인터페이스를 사용하기 위해 필요
 // 각 아이템을 화면에 어떻게 보여줄지 결정하여 그려주는 역할 (어댑터 패턴)
 public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.InventoryViewHolder> {
 
-    private List<Character> itemList; // 어댑터가 화면에 표시할 캐릭터 데이터 리스트
+    private List<CharacterInstance> itemList; // 어댑터가 화면에 표시할 캐릭터 데이터 리스트
     private OnItemClickListener listener;// 아이템 클릭 이벤트를 외부에 전달하기 위한 리스너 인터페이스
     public interface OnItemClickListener {
-        void onItemClick(Character item);
+        void onItemClick(CharacterInstance item);
     }
     // 어댑터 생성자: 데이터 리스트를 전달받습니다.
-    public CharacterAdapter(List<Character> itemList, OnItemClickListener listener) {
+    public CharacterAdapter(List<CharacterInstance> itemList, OnItemClickListener listener) {
         this.itemList = itemList;
         this.listener = listener;
     }
@@ -38,7 +38,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Inve
     // 재활용되는 뷰에 새로운 데이터를 설정하는 곳
     @Override
     public void onBindViewHolder(@NonNull InventoryViewHolder holder, int position) {
-        Character item = itemList.get(position); // 현재 위치의 아이템 데이터 가져오기
+        CharacterInstance item = itemList.get(position); // 현재 위치의 아이템 데이터 가져오기
 
         holder.itemName.setText(item.getName()); // 아이템(캐릭터) 이름 설정
         holder.itemImage.setImageResource(item.getImageId()); // 아이템(캐릭터) 이미지 설정

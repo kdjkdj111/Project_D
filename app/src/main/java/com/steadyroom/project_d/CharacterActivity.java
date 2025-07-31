@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.util.Log;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -51,13 +51,16 @@ public class CharacterActivity extends AppCompatActivity implements CollectFragm
         }
         progressTextView.setText(String.format(Locale.US, "%d/%d", initialAcquiredCount, initialTotalCount));
 
+        List<CharacterInstance> dummy = new ArrayList<>();
+        dummy.add(new CharacterInstance("단데기", 13, 32, 1, R.drawable.ch1));
+        dummy.add(new CharacterInstance("리자몽", 28, 65, 4, R.drawable.ch4));
 
         //테스트용 캐릭터 샘플 삽입
-        List<Character> Characters = new ArrayList<>();
-        for (Character character : CharacterList.BASE_POOL) {
+        List<CharacterInstance> characterInstances = new ArrayList<>();
+        for (CharacterInstance characterInstance : dummy) {
             // 캐릭터의 이름을 확인하여 원하는 캐릭터인지 판별합니다.
-            if (character.getName().equals("단데기") || character.getName().equals("리자몽")) {
-                Characters.add(character); // 원하는 캐릭터라면 리스트에 추가
+            if (characterInstance.getName().equals("단데기") || characterInstance.getName().equals("리자몽")) {
+                characterInstances.add(characterInstance); // 원하는 캐릭터라면 리스트에 추가
             }
         }
 
@@ -71,7 +74,7 @@ public class CharacterActivity extends AppCompatActivity implements CollectFragm
                 }*/
                 //  인벤토리에 있는 캐릭터정보를 도감에 전달
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("inventory", new ArrayList<>(Characters)); // Characters는 인벤토리 리스트
+                bundle.putSerializable("inventory", new ArrayList<>(characterInstances)); // Characters는 인벤토리 리스트
                 fragment.setArguments(bundle);
 
                 fragment.setOnCodexProgressListener(CharacterActivity.this);
@@ -86,16 +89,19 @@ public class CharacterActivity extends AppCompatActivity implements CollectFragm
 
 
         // 어댑터 생성 및 클릭 리스너 설정
-        CharacterAdapter characterAdapter = new CharacterAdapter(Characters, this::displaySelectedItemDetails);
+        CharacterAdapter characterAdapter = new CharacterAdapter(characterInstances, this::displaySelectedItemDetails);
         characterRecyclerView.setAdapter(characterAdapter);
 
         // 앱 시작 시 첫 번째 아이템 상세 정보 표시
-        if (!Characters.isEmpty()) {
-            displaySelectedItemDetails(Characters.get(0));
+        if (!characterInstances.isEmpty()) {
+            displaySelectedItemDetails(characterInstances.get(0));
         }
     }
+
+
+
     //선택된 아이템 상세보기
-    private void displaySelectedItemDetails(Character item) {
+    private void displaySelectedItemDetails(CharacterInstance item) {
         if (item != null) {
             selectedCharacterImage.setImageResource(item.getImageId());
             selectedCharacterDescription.setText(

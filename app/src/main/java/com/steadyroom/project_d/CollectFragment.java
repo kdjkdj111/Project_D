@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
-import android.util.Log;
+
 public class CollectFragment extends DialogFragment implements CollectAdapter.OnCodexEntryClickListener {
     private List<CollectCharacter> collectCharacterList;
     private RecyclerView codexRecyclerView;
@@ -42,7 +42,7 @@ public class CollectFragment extends DialogFragment implements CollectAdapter.On
 
         //  CollectFragment가 Bundle을 잘 받았는지 확인하는 로그
         if (getArguments() != null) {
-            List<Character> inventory = (List<Character>) getArguments().getSerializable("inventory");
+            List<CharacterTemplate> inventory = (List<CharacterTemplate>) getArguments().getSerializable("inventory");
 
             // 여기서 inventory 리스트를 기반으로 도감용 CollectCharacter 리스트 만들어서 사용
             //  inventory 리스트가 null이 아닌지 확인하는 로그
@@ -52,18 +52,18 @@ public class CollectFragment extends DialogFragment implements CollectAdapter.On
                     Log.w("CollectFragment", "인벤토리 리스트가 비어 있습니다. 도감에 획득 캐릭터가 없을 수 있습니다.");
                 }*/
 
-                for (Character character : CharacterList.BASE_POOL) {
+                for (CharacterTemplate characterTemplate : CharacterList.BASE_POOL) {
                     boolean isAcquired = false;
 
-                    for (Character invChar : inventory) {
-                        if (character.getName().equals(invChar.getName())) {
+                    for (CharacterTemplate invChar : inventory) {
+                        if (characterTemplate.getName().equals(invChar.getName())) {
                             isAcquired = true;
                             break;
                         }
                     }
 
-                    String displayName = isAcquired ? character.getName() : "???";
-                    int displayImageResId = isAcquired ? character.getImageId() : R.drawable.sharp_block_24;
+                    String displayName = isAcquired ? characterTemplate.getName() : "???";
+                    int displayImageResId = isAcquired ? characterTemplate.getImageId() : R.drawable.sharp_block_24;
 
                     collectCharacterList.add(new CollectCharacter(displayName, displayImageResId, isAcquired));
                     // 💡 collectCharacterList에 항목이 추가될 때마다 확인하는 로그

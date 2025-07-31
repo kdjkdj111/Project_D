@@ -14,8 +14,6 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.List;
 
 public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHolder> {
@@ -38,27 +36,26 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
 
     @Override
     public void onBindViewHolder(GachaViewHolder holder, int position) {
-        Character character = pickRandomCharacter(BASE_POOL);
+        CharacterInstance characterInstance = pickRandomCharacter(BASE_POOL);
 
-        holder.tvName.setText(character.getName());
-        holder.tvAttack.setText("Atk: " + character.getAttack());
-        holder.tvHP.setText("HP: " + character.getHp());
-        holder.tvDirt.setText("Dirt: " + character.getDirt());
-        holder.imageView.setImageResource(character.getImageId());
+        holder.tvName.setText(characterInstance.getName());
+        holder.tvAttack.setText("Atk: " + characterInstance.getAttack());
+        holder.tvHP.setText("HP: " + characterInstance.getHp());
+        holder.tvDirt.setText("Dirt: " + characterInstance.getDirt());
+        holder.imageView.setImageResource(characterInstance.getImageId());
 
         holder.btnGet.setEnabled(true);
 
         holder.btnGet.setOnClickListener(v-> {
             holder.btnGet.setEnabled(false);
 
-            currentUser.characters.add(character);
+            currentUser.characterInstances.add(characterInstance);
 
             // 2. Firebase에 동기화
-            userRef.child("characters").setValue(currentUser.characters);
+            userRef.child("characters").setValue(currentUser.characterInstances);
 
             // 3. (선택) 화면에서 카드 제거 등
-            holder.btnGet.setEnabled(false);
-            Toast.makeText(context, character.getName() + " 획득!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, characterInstance.getName() + " 획득!", Toast.LENGTH_SHORT).show();
 
             // 4. (선택) 완료 콜백 등 처리
             // dbRef.setValue(…).addOnCompleteListener(task -> { ... })
@@ -86,14 +83,29 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
             btnGet = itemView.findViewById(R.id.btn_get);
         }
     }
-    private Character pickRandomCharacter(List<Character> pool) {
-        double rand = Math.random(); // 0~1
+    public CharacterInstance pickRandomCharacter(List<CharacterTemplate> pool) {
+        double rand = Math.random();
         double cumulative = 0.0;
-        for (Character c : pool) {
+        for (CharacterTemplate c : pool) {
             cumulative += c.getAppearChance();
-            if (rand < cumulative) return c;
+            if (rand < cumulative) {
+                // base 캐릭터 선택됨 → 랜덤 특성 인스턴스 생성 & 반환!
+                return createRandomInstance(c);
+            }
         }
-        return pool.get(pool.size()-1);
+        // 혹시 누락방지
+        return createRandomInstance(pool.get(pool.size() - 1));
+    }
+
+    public CharacterInstance createRandomInstance(CharacterTemplate base) {
+        int attack = getRandomInRange(base.getMinAttack(), base.getMaxAttack());
+        int hp = getRandomInRange(base.getMinHp(), base.getMaxHp());
+        int dirt = getRandomInRange(base.getMinDirt(), base.getMaxDirt());
+        return new CharacterInstance(base.getName(), attack, hp, dirt, base.getImageId());
+    }
+
+    private int getRandomInRange(int min, int max) {
+        return min + (int)(Math.random() * (max - min + 1));
     }
 
 }

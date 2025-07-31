@@ -1,6 +1,8 @@
 package com.steadyroom.project_d;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,13 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class GachaActivity extends AppCompatActivity {
 
     private User currentUser;
-    private List<Character> characterList;    // 멤버 변수
     private GachaAdapter gachaAdapter;
     private ViewPager2 viewPager;
 
@@ -33,6 +32,14 @@ public class GachaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_gacha);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ConstraintLayout), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        setupBackButton();
 
 
         // (1) 로그인 유저 UID 확인
@@ -57,7 +64,7 @@ public class GachaActivity extends AppCompatActivity {
                 
 
 
-                ViewPager2 viewPager = findViewById(R.id.shortsVP);
+                viewPager = findViewById(R.id.shortsVP);
                 gachaAdapter = new GachaAdapter(GachaActivity.this, currentUser, userRef);
                 viewPager.setAdapter(gachaAdapter);
             }
@@ -68,5 +75,13 @@ public class GachaActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    private void setupBackButton() {
+        ImageView backButton = findViewById(R.id.backButton);
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> {
+                finish();
+            });
+        }
     }
 }
