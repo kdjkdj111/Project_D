@@ -7,7 +7,7 @@ public class User {
     public String user_id;
     public String nickname;
     public int userPoint = 0;
-    public List<CharacterInstance> characterInstances = new ArrayList<>();  // 빈 리스트로 초기화
+    public List<CharacterInstance> characters = new ArrayList<>();  // 빈 리스트로 초기화
     public List<Item> items = new ArrayList<>();
 
     public User() {}  // Firebase에서 사용

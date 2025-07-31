@@ -67,6 +67,7 @@ public class GachaActivity extends AppCompatActivity {
                 viewPager = findViewById(R.id.shortsVP);
                 gachaAdapter = new GachaAdapter(GachaActivity.this, currentUser, userRef);
                 viewPager.setAdapter(gachaAdapter);
+                viewPager.setPageTransformer(new SliderTransformer());
             }
 
             @Override

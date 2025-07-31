@@ -49,10 +49,10 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         holder.btnGet.setOnClickListener(v-> {
             holder.btnGet.setEnabled(false);
 
-            currentUser.characterInstances.add(characterInstance);
+            currentUser.characters.add(characterInstance);
 
             // 2. Firebase에 동기화
-            userRef.child("characters").setValue(currentUser.characterInstances);
+            userRef.child("characters").setValue(currentUser.characters);
 
             // 3. (선택) 화면에서 카드 제거 등
             Toast.makeText(context, characterInstance.getName() + " 획득!", Toast.LENGTH_SHORT).show();
