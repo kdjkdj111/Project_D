@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,12 +51,17 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        PointManager.getInstance().startTime();  // 시간 측정 시작
+        // 앱 꺼진 동안 포인트 지급
+        PointManager.getInstance().OfflinePoints(this, () -> {
+            runOnUiThread(() -> {
+            });
+        });
     }
- /* // 여기 추가 되면 설정 창 나갔을 때 자동으로 포인트 쌓임
-    @Override
+
     protected void onPause() {
         super.onPause();
-        PointManager.getInstance().PointsEared();  // 시간 측정 종료 및 포인트 누적
-    }*/
+
+        // 앱 나갈 때 마지막 시간 저장
+        PointManager.getInstance().saveLastQuitTime(this);
+    }
 }
