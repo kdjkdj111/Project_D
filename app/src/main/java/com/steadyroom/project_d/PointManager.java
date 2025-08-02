@@ -96,7 +96,7 @@ public class PointManager {
         return 0;
     }
 
-    public void OfflinePoints(Context context, Runnable onComplete) {
+    public void OfflinePoints(Context context, Runnable onEarned, Runnable onSkipped) {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         long lastQuitTime = prefs.getLong(KEY_LAST_QUIT_TIME, System.currentTimeMillis());
 
@@ -120,13 +120,13 @@ public class PointManager {
                             saveFirebase();
                             Log.d("PointManager", "오프라인 포인트 적립: " + earned + "점 (총: " + userPoint + ")");
 
-                            onComplete.run();
+                            onEarned.run();
                         });
             } else {
-                onComplete.run();
+                onSkipped.run();
             }
         } else {
-            onComplete.run();
+            onSkipped.run();
         }
     }
 

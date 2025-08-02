@@ -49,11 +49,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        /*
         // 🔧 사용 기록 권한 체크
         if (!hasUsageStatsPermission()) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivity(intent);  // 사용자가 설정에서 권한을 수동으로 켜야 함
-        }
+        }*/
 
         checkAndCreateUserInDatabase();
 
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private boolean hasUsageStatsPermission() {
         AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
@@ -127,19 +129,25 @@ public class MainActivity extends AppCompatActivity {
 
         return mode == AppOpsManager.MODE_ALLOWED;
     }
+    private static boolean hasPromptedPermission = false;
 
     //앱 사용시간에 따른 포인트 지급
     @Override
     protected void onResume(){
         super.onResume();
-
+        if(!hasUsageStatsPermission() && !hasPromptedPermission){
+            hasPromptedPermission = true;
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
         // 🔧 오프라인 포인트 지급
-        PointManager.getInstance().OfflinePoints(this, () -> {
-            runOnUiThread(() -> {
-                Toast.makeText(this, "오프라인 포인트 적립 완료", Toast.LENGTH_SHORT).show();
-                updatePointText();
-            });
-        });
+        PointManager.getInstance().OfflinePoints(this,
+                () -> runOnUiThread(() -> {
+                    Toast.makeText(this, "오프라인 포인트 적립 완료", Toast.LENGTH_SHORT).show();
+                    updatePointText();
+                }),
+                () -> Log.d("MainActivity", "오프라인 포인트 적립 없음 또는 조건 불충분")
+        );
     }
 
     @Override

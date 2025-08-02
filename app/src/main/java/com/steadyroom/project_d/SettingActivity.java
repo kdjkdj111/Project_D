@@ -2,6 +2,7 @@ package com.steadyroom.project_d;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -52,10 +53,12 @@ public class SettingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // 앱 꺼진 동안 포인트 지급
-        PointManager.getInstance().OfflinePoints(this, () -> {
-            runOnUiThread(() -> {
-            });
-        });
+        PointManager.getInstance().OfflinePoints(this,
+                () -> runOnUiThread(() -> {
+                    Toast.makeText(this, "오프라인 포인트 적립 완료", Toast.LENGTH_SHORT).show();
+                }),
+                () -> Log.d("MainActivity", "오프라인 포인트 적립 없음 또는 조건 불충분")
+        );
     }
 
     protected void onPause() {
