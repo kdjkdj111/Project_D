@@ -14,12 +14,16 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHolder> {
     private Context context;
     private User currentUser;
     private DatabaseReference userRef;
+
 
     // 생성자
     public GachaAdapter(Context context, User currentUser, DatabaseReference userRef)  {
@@ -43,6 +47,27 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         holder.tvHP.setText("HP: " + characterInstance.getHp());
         holder.tvDirt.setText("Dirt: " + characterInstance.getDirt());
         holder.imageView.setImageResource(characterInstance.getImageId());
+
+        CharacterTemplate template = findTemplateByName(characterInstance.getName());
+        if (template != null) {
+            double chance = template.getAppearChance();
+            holder.tvChance.setText(String.format("출현 확률: %.2f%%", chance * 100));
+        } else {
+            holder.tvChance.setText("출현 확률: ?");
+        }
+
+        boolean isAcquired = false;
+        for (CharacterInstance owned : currentUser.characters) {
+            if (owned.getName().equals(characterInstance.getName())) {
+                holder.tvAcquire.setText("보유중");
+                isAcquired = true;
+                break;
+            }
+        }
+        if (!isAcquired) {
+            // 미획득 캐릭터인 경우
+            holder.tvAcquire.setText("미보유");
+        }
 
         holder.btnGet.setEnabled(true);
 
@@ -70,7 +95,7 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
     // ViewHolder 내부 클래스
     public class GachaViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView tvName, tvAttack, tvHP, tvDirt;
+        TextView tvName, tvAttack, tvHP, tvDirt, tvAcquire, tvChance;
         Button btnGet;
 
         public GachaViewHolder(View itemView) {
@@ -81,6 +106,8 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
             tvHP = itemView.findViewById(R.id.tv_HP);
             tvDirt = itemView.findViewById(R.id.tv_Dirt);
             btnGet = itemView.findViewById(R.id.btn_get);
+            tvAcquire = itemView.findViewById(R.id.tv_Acquire);
+            tvChance = itemView.findViewById(R.id.tv_chance);
         }
     }
     public CharacterInstance pickRandomCharacter(List<CharacterTemplate> pool) {
@@ -108,4 +135,12 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         return min + (int)(Math.random() * (max - min + 1));
     }
 
+    private CharacterTemplate findTemplateByName(String name) {
+        for (CharacterTemplate template : CharacterList.BASE_POOL) {
+            if (template.getName().equals(name)) {
+                return template;
+            }
+        }
+        return null; // 못 찾으면 null
+    }
 }

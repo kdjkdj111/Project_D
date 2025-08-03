@@ -8,6 +8,7 @@ public class CharacterInstance {
     private int imageId;
 
     public CharacterInstance() {}
+
     public CharacterInstance(String name, int attack, int hp, int dirt, int imageId) {
         this.name = name;
         this.attack = attack;
