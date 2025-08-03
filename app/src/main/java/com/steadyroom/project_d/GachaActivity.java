@@ -1,7 +1,8 @@
 package com.steadyroom.project_d;
 
-import android.content.Intent;
+
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -84,5 +85,23 @@ public class GachaActivity extends AppCompatActivity {
                 finish();
             });
         }
+    }
+
+    //개발용 키보드 슬라이드
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                // 아래 방향키로 다음 페이지
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+                return true;
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                // 위 방향키로 이전 페이지
+                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
+                return true;
+            }
+            // 다른 키 추가 매핑 가능
+        }
+        return super.dispatchKeyEvent(event);
     }
 }
