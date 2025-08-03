@@ -36,6 +36,20 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button btnResetPermission = findViewById(R.id.btn_reset_permission);
+        btnResetPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSharedPreferences("PermissionPrefs", MODE_PRIVATE)
+                        .edit()
+                        .remove("hasPromptedPermission") // 또는 .clear() 하면 전체 초기화됨
+                        .apply();
+
+                Toast.makeText(SettingActivity.this, "권한 설정이 초기화되었습니다.\n다음 앱 실행 시 다시 요청됩니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         //로그아웃 버튼 클릭 시 로그인 창으로 이동
         Button btnLogout = findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(v -> {

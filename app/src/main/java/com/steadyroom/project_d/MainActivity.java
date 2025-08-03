@@ -3,6 +3,7 @@ package com.steadyroom.project_d;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 
@@ -129,17 +130,27 @@ public class MainActivity extends AppCompatActivity {
 
         return mode == AppOpsManager.MODE_ALLOWED;
     }
-    private static boolean hasPromptedPermission = false;
 
+    private void checkAndPromptUsagePermission() {
+        SharedPreferences prefs = getSharedPreferences("PermissionPrefs", MODE_PRIVATE);
+        boolean hasPrompted = prefs.getBoolean("hasPromptedPermission", false);
+
+        if (!hasUsageStatsPermission() && !hasPrompted) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("hasPromptedPermission", true);
+            editor.apply();
+
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+    }
     //앱 사용시간에 따른 포인트 지급
     @Override
     protected void onResume(){
         super.onResume();
-        if(!hasUsageStatsPermission() && !hasPromptedPermission){
-            hasPromptedPermission = true;
-            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
-        }
+
+        checkAndPromptUsagePermission();
+
         // 🔧 오프라인 포인트 지급
         PointManager.getInstance().OfflinePoints(this,
                 () -> runOnUiThread(() -> {
