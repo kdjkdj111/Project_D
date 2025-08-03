@@ -15,11 +15,12 @@
 
         <TextView
             android:id="@+id/tv_Name"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="180dp"
+            android:layout_height="46dp"
             android:layout_marginTop="80dp"
             android:text="Name"
-            android:textSize="34sp"
+            android:textAlignment="center"
+            android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"

@@ -25,7 +25,7 @@ import java.util.List;
 //싱글톤 패턴
 public class PointManager {
     private static PointManager instance;
-    private int userPoint = 0;
+    private long userPoint = 0;
 
     // 🔧 오프라인 적립 관련 상수
     private static final String PREF_NAME = "PointPrefs";
@@ -75,7 +75,7 @@ public class PointManager {
                         .child("userPoint")
                         .get()
                         .addOnSuccessListener(snapshot -> {
-                            int current = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
+                            long current = snapshot.exists() ? snapshot.getValue(Integer.class) : 0;
                             userPoint = current + earned;
 
                             saveFirebase();
@@ -160,11 +160,11 @@ public class PointManager {
     }*/
 
     //현재 포인트 반환
-    public int getUserPoint(){
+    public long getUserPoint(){
         return userPoint;
     }
 
-    public void setUserPoint(int point){
+    public void setUserPoint(long point){
         this.userPoint = point;
     }
     private void saveFirebase(){
