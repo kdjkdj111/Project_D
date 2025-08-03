@@ -1,9 +1,14 @@
 package com.steadyroom.project_d;
 
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 
+import android.os.Process;
+import android.provider.Settings;
 import android.util.Log;
 
 import android.view.View;
@@ -45,6 +50,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        /*
+        // 🔧 사용 기록 권한 체크
+        if (!hasUsageStatsPermission()) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);  // 사용자가 설정에서 권한을 수동으로 켜야 함
+        }*/
+
         checkAndCreateUserInDatabase();
 
         textPoint = findViewById(R.id.text_point);
@@ -52,19 +64,16 @@ public class MainActivity extends AppCompatActivity {
         //조회 버튼 클릭 시 포인트 표시
         btncheck = findViewById(R.id.btn_check);
         btncheck.setOnClickListener(v -> {
-            int earned = PointManager.getInstance().PointsEared();
-            if(earned > 0){
-                Toast.makeText(MainActivity.this, earned +"점이 추가 되었습니다.", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(MainActivity.this, "10초 이상 사용 시 포인트가 지급됩니다.", Toast.LENGTH_SHORT).show();
-            }
-
-            updatePointText();
-            PointManager.getInstance().startTime();
+            // 🔁 기기 사용 시간 기반 포인트 적립
+            PointManager.getInstance().PointsEarned(MainActivity.this, () -> {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "포인트 적립 완료", Toast.LENGTH_SHORT).show();
+                    updatePointText();
+                });
+            });
         });
 
         updatePointText();
-        PointManager.getInstance().startTime();
 
         //클릭 시 설정으로 이동
         btnSet = findViewById(R.id.btn_set);
@@ -112,18 +121,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private boolean hasUsageStatsPermission() {
+        AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), getPackageName());
+
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
+
+    private void checkAndPromptUsagePermission() {
+        SharedPreferences prefs = getSharedPreferences("PermissionPrefs", MODE_PRIVATE);
+        boolean hasPrompted = prefs.getBoolean("hasPromptedPermission", false);
+
+        if (!hasUsageStatsPermission() && !hasPrompted) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("hasPromptedPermission", true);
+            editor.apply();
+
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
+    }
     //앱 사용시간에 따른 포인트 지급
     @Override
     protected void onResume(){
         super.onResume();
-        PointManager.getInstance().startTime();
+
+        checkAndPromptUsagePermission();
+
+        // 🔧 오프라인 포인트 지급
+        PointManager.getInstance().OfflinePoints(this,
+                () -> runOnUiThread(() -> {
+                    Toast.makeText(this, "오프라인 포인트 적립 완료", Toast.LENGTH_SHORT).show();
+                    updatePointText();
+                }),
+                () -> Log.d("MainActivity", "오프라인 포인트 적립 없음 또는 조건 불충분")
+        );
     }
-/*
+
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
-        PointManager.getInstance().PointsEared();
-    }*/
+        PointManager.getInstance().saveLastQuitTime(this);  // 🔧 마지막 종료 시간 저장
+    }
     private void updatePointText(){
         textPoint.setText("포인트: "+ PointManager.getInstance().getUserPoint() +"점");
     }

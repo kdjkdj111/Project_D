@@ -2,8 +2,10 @@ package com.steadyroom.project_d;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +36,20 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button btnResetPermission = findViewById(R.id.btn_reset_permission);
+        btnResetPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSharedPreferences("PermissionPrefs", MODE_PRIVATE)
+                        .edit()
+                        .remove("hasPromptedPermission") // 또는 .clear() 하면 전체 초기화됨
+                        .apply();
+
+                Toast.makeText(SettingActivity.this, "권한 설정이 초기화되었습니다.\n다음 앱 실행 시 다시 요청됩니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         //로그아웃 버튼 클릭 시 로그인 창으로 이동
         Button btnLogout = findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(v -> {
@@ -50,12 +66,19 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        PointManager.getInstance().startTime();  // 시간 측정 시작
+        // 앱 꺼진 동안 포인트 지급
+        PointManager.getInstance().OfflinePoints(this,
+                () -> runOnUiThread(() -> {
+                    Toast.makeText(this, "오프라인 포인트 적립 완료", Toast.LENGTH_SHORT).show();
+                }),
+                () -> Log.d("MainActivity", "오프라인 포인트 적립 없음 또는 조건 불충분")
+        );
     }
- /* // 여기 추가 되면 설정 창 나갔을 때 자동으로 포인트 쌓임
-    @Override
+
     protected void onPause() {
         super.onPause();
-        PointManager.getInstance().PointsEared();  // 시간 측정 종료 및 포인트 누적
-    }*/
+
+        // 앱 나갈 때 마지막 시간 저장
+        PointManager.getInstance().saveLastQuitTime(this);
+    }
 }
