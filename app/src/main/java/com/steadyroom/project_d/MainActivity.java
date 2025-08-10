@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,6 +30,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
     private Button btnSet;
@@ -37,7 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private Button btnChra;
     private Button btnBag;
     private Button btncheck;
+    private Button btnBattle;
     private TextView textPoint;
+
+    private DatabaseReference roomsRef;
+    private String myUid;
+    private Map<String, Object> myCharacterData; //임시 메인 캐릭터
+    private ValueEventListener waitOpponentListener; // 대기 리스너 참조 변수화
+
+    private boolean isMatching = false; //매칭 취소 로직
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkAndCreateUserInDatabase();
 
+
         textPoint = findViewById(R.id.text_point);
 
         //조회 버튼 클릭 시 포인트 표시
@@ -74,6 +88,47 @@ public class MainActivity extends AppCompatActivity {
         });
 
         updatePointText();
+
+        //클릭 시 전투 시작. (마음 단단히 먹으시길)
+        roomsRef = FirebaseDatabase.getInstance().getReference("battleRooms");
+        myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //임시 메인 캐릭터
+        myCharacterData = new HashMap<>();
+        myCharacterData.put("characterName", "단데기");
+        myCharacterData.put("hp", 40);
+        myCharacterData.put("attack", 15);
+        myCharacterData.put("dirt", 2);
+        //myCharacterData.put("skillLeft",4);
+
+        btnBattle = findViewById(R.id.btn_battle);
+        btnBattle.setText("배틀 시작");
+        isMatching = false;
+
+        btnBattle.setOnClickListener(v -> {
+            btnBattle.setEnabled(false); // 중복 클릭 방지
+
+            if (!isMatching) {
+                // 매칭 시작
+                isMatching = true;
+                btnBattle.setText("매칭 취소");
+                startMatching(() -> {
+                    btnBattle.setEnabled(true);}, () -> {
+                    // 시작 실패 시 상태 복원
+                    isMatching = false;
+                    btnBattle.setText("배틀 시작");
+                    btnBattle.setEnabled(true);
+                });
+            } else {
+                // 매칭 취소
+                cancelMatchSearch(() -> {
+                    isMatching = false;
+                    btnBattle.setText("배틀 시작");
+                    btnBattle.setEnabled(true);
+                    Toast.makeText(this, "매칭이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
 
         //클릭 시 설정으로 이동
         btnSet = findViewById(R.id.btn_set);
@@ -170,6 +225,26 @@ public class MainActivity extends AppCompatActivity {
         textPoint.setText("포인트: "+ PointManager.getInstance().getUserPoint() +"점");
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (waitOpponentListener != null && currentWaitingRoomId != null) {
+            roomsRef.child(currentWaitingRoomId).removeEventListener(waitOpponentListener);
+            waitOpponentListener = null;
+            currentWaitingRoomId = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (waitOpponentListener != null && currentWaitingRoomId != null) {
+            roomsRef.child(currentWaitingRoomId).removeEventListener(waitOpponentListener);
+            waitOpponentListener = null;
+            currentWaitingRoomId = null;
+        }
+    }
+
     public void checkAndCreateUserInDatabase() {
         // 1. 현재 로그인된 유저 가져오기
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -196,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                     // 이미 정보 있음 → 불러오기/앱에 반영
                     User user = snapshot.getValue(User.class);
                     Log.d("UserInit", "기존 유저 정보 불러옴: " + user.nickname);
+                    myCharacterData.put("nickname", user.nickname);
                     // 필요한 후처리: 예) Main 화면 이동 등
 
                     //firebase에서 포인트 가져오기
@@ -213,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("UserInit", "신규 유저 정보 DB에 저장 완료");
                                     Toast.makeText(MainActivity.this, "유저 정보가 등록되었습니다.", Toast.LENGTH_SHORT).show();
                                     // 이후 처리: 예) 초기 화면 전환 등
-
+                                    myCharacterData.put("nickname", defaultNickname);
                                     // 신규 유저 정보 확인 시 userPoint 값 0으로 설정
                                     PointManager.getInstance().setUserPoint(0);
                                     updatePointText();
@@ -232,4 +308,139 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void startMatching(Runnable onReady, Runnable onFail) {
+        // 이전 대기 상태 있으면 취소
+        cancelMatchSearch(null);
+
+        roomsRef.orderByChild("state").equalTo("waiting")
+                .limitToFirst(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // 기존 방 참여 시도
+                            for (DataSnapshot roomSnap : snapshot.getChildren()) {
+                                String roomId = roomSnap.getKey();
+                                DatabaseReference roomRef = roomsRef.child(roomId);
+                                roomRef.runTransaction(new Transaction.Handler() {
+                                    @NonNull
+                                    @Override
+                                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                                        Map<String, Object> roomData = (Map<String, Object>) currentData.getValue();
+                                        if (roomData == null) return Transaction.success(currentData);
+
+                                        String state = (String) roomData.get("state");
+                                        if (!"waiting".equals(state)) return Transaction.abort();
+
+                                        Map<String, Object> players = (Map<String, Object>) roomData.get("players");
+                                        if (players == null) players = new HashMap<>();
+                                        players.put(myUid, myCharacterData);
+
+                                        myCharacterData.put("skillLeft",3);
+                                        roomData.put("players", players);
+                                        roomData.put("state", "playing");
+                                        roomData.put("turn", myUid);
+                                        roomData.put("starterUid",myUid);
+
+
+                                        currentData.setValue(roomData);
+                                        return Transaction.success(currentData);
+                                    }
+
+                                    @Override
+                                    public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                                        if (committed) {
+                                            goToBattleScreen(roomId);
+
+                                        } else {
+                                            onFail.run();
+                                        }
+                                    }
+                                });
+                                break;
+                            }
+                        } else {
+                            // 대기방 생성
+                            createNewRoomAndWait();
+                            onReady.run();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Toast.makeText(MainActivity.this, "매칭 오류: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        onFail.run();
+                    }
+                });
+    }
+
+    private void goToBattleScreen(String roomId) {
+        // 실제 전투 화면으로 이동 (Intent 등)
+        Intent intent = new Intent(this, BattleActivity.class);
+        intent.putExtra("roomId", roomId);
+        startActivity(intent);
+        btnBattle.setEnabled(true);
+        btnBattle.setText("배틀 시작");
+        isMatching = false;
+    }
+
+
+    private void createNewRoomAndWait() {
+        String newRoomId = roomsRef.push().getKey();
+        currentWaitingRoomId = newRoomId;
+
+        Map<String, Object> roomData = new HashMap<>();
+        roomData.put("state", "waiting");
+        Map<String, Object> players = new HashMap<>();
+        myCharacterData.put("skillLeft",4);
+        players.put(myUid, myCharacterData);
+        roomData.put("players", players);
+        roomsRef.child(newRoomId).setValue(roomData)
+                .addOnSuccessListener(aVoid -> waitForOpponent(newRoomId));
+    }
+
+    private String currentWaitingRoomId = null; // 현재 대기 중인 방 ID 저장(리스너 해제 시에 사용)
+    private void waitForOpponent(String roomId) {
+        DatabaseReference roomRef = roomsRef.child(roomId);
+
+        waitOpponentListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (!snapshot.exists()) return;
+                Map<String, Object> roomData = (Map<String, Object>) snapshot.getValue();
+                if (roomData == null) return;
+
+                Map<String, Object> players = (Map<String, Object>) roomData.get("players");
+                if (players != null && players.size() > 1) {
+                    roomRef.removeEventListener(waitOpponentListener);
+                    waitOpponentListener = null;
+                    goToBattleScreen(roomId);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) { }
+        };
+
+        roomRef.addValueEventListener(waitOpponentListener);
+    }
+
+    private void cancelMatchSearch(Runnable onCancelComplete) {
+        if (waitOpponentListener != null && currentWaitingRoomId != null) {
+            roomsRef.child(currentWaitingRoomId).removeEventListener(waitOpponentListener);
+            waitOpponentListener = null;
+        }
+
+        if (currentWaitingRoomId != null) {
+            roomsRef.child(currentWaitingRoomId).removeValue()
+                    .addOnCompleteListener(task -> {
+                        currentWaitingRoomId = null;
+                        if (onCancelComplete != null) onCancelComplete.run();
+                    });
+        } else {
+            if (onCancelComplete != null) onCancelComplete.run();
+        }
+    }
 }
+
