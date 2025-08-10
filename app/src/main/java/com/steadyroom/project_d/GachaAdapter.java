@@ -44,8 +44,19 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         holder.tvAttack.setText("Atk: " + character.getAttack());
         holder.tvHP.setText("HP: " + character.getHp());
         holder.tvDirt.setText("Dirt: " + character.getDirt());
-        holder.imageView.setImageResource(character.getImageId());
 
+        //holder.imageView.setImageResource(character.getImageId());
+        // String 타입의 이미지 ID를 int 타입의 리소스 ID로 변환
+        int imageResId = holder.itemView.getContext().getResources().getIdentifier(
+                character.getImageId(),
+                "drawable",
+                holder.itemView.getContext().getPackageName()
+        );
+
+        // 리소스 ID가 유효한지 확인하고 이미지 설정
+        if (imageResId != 0) {
+            holder.imageView.setImageResource(imageResId);
+        }
         holder.btnGet.setEnabled(true);
 
         holder.btnGet.setOnClickListener(v-> {

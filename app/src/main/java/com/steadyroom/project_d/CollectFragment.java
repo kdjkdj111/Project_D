@@ -63,7 +63,20 @@ public class CollectFragment extends DialogFragment implements CollectAdapter.On
                     }
 
                     String displayName = isAcquired ? character.getName() : "???";
-                    int displayImageResId = isAcquired ? character.getImageId() : R.drawable.sharp_block_24;
+                    int displayImageResId;
+
+                    if (isAcquired) {
+                        // 획득한 경우: String ID를 int 리소스 ID로 변환
+                        String imageIdString = character.getImageId();
+                        displayImageResId = requireContext().getResources().getIdentifier(
+                                imageIdString,
+                                "drawable",
+                                requireContext().getPackageName()
+                        );
+                    } else {
+                        // 획득하지 않은 경우: 기본 이미지(int) 사용
+                        displayImageResId = R.drawable.sharp_block_24;
+                    }
 
                     collectCharacterList.add(new CollectCharacter(displayName, displayImageResId, isAcquired));
                     // 💡 collectCharacterList에 항목이 추가될 때마다 확인하는 로그
