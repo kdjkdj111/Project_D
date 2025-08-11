@@ -5,11 +5,11 @@ public class CharacterInstance {
     private int attack;
     private int hp;
     private int dirt;
-    private int imageId;
+    private String imageId;
 
     public CharacterInstance() {}
 
-    public CharacterInstance(String name, int attack, int hp, int dirt, int imageId) {
+    public CharacterInstance(String name, int attack, int hp, int dirt, String imageId) {
         this.name = name;
         this.attack = attack;
         this.hp = hp;
@@ -29,7 +29,7 @@ public class CharacterInstance {
     public int getDirt() { return dirt; }
     public void setDirt(int dirt) { this.dirt = dirt; }
 
-    public int getImageId() { return imageId; }
-    public void setImageId(int imageId) { this.imageId = imageId; }
+    public String getImageId() { return imageId; }
+    public void setImageId(String imageId) { this.imageId = imageId; }
 }
 

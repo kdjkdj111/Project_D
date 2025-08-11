@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.util.Log;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -14,14 +14,28 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class CharacterActivity extends AppCompatActivity implements CollectFragment.OnCodexProgressListener {
+public class CharacterActivity extends AppCompatActivity implements MyCharacterManager.OnDataLoadListener{
+    //View 요소 (UI)
     private ImageView selectedCharacterImage;
     private TextView selectedCharacterDescription;
     private TextView progressTextView;
+    //캐릭터 데이터를 관리하는 리스트 및 어댑터
+    private CharacterAdapter characterAdapter;
+    private MyCharacterManager myCharacterManager;
+    private List<CharacterInstance> myCharacters = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,93 +43,66 @@ public class CharacterActivity extends AppCompatActivity implements CollectFragm
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_character);
 
+        //시스템 패딩(UI)설정
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.inventoryRoot), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        // 3가지 역할의 메서드
+        setupViews();
+        setupListeners();
+        setupManagers();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        myCharacterManager.loadMyCharacters();//인벤토리 목록 불러오기
+        loadCodexProgress();//도감 진행률 불러오기
+    }
 
+    // MyCharacterManager로부터 데이터 로드 성공 시 호출
+    @Override
+    public void onDataLoaded(List<CharacterInstance> characters) {
+        // 기존 리스트를 비우고 새로 받아온 캐릭터들로 채워서 UI 갱신
+        myCharacters.clear();
+        myCharacters.addAll(characters);
+        characterAdapter.notifyDataSetChanged();
+
+        // 첫 번째 아이템 상세 정보 표시
+        if (!myCharacters.isEmpty()) {
+            displaySelectedChar(myCharacters.get(0));
+        }
+    }
+
+    // 데이터 로드 실패 시 호출
+    @Override
+    public void onDataLoadFailed(String errorMessage) {
+        Log.e("CharacterActivity", "데이터 로드 실패: " + errorMessage);
+    }
+
+
+    //-------------------- 역할별로 분리된 메서드 --------------------
+
+    // 모든 뷰(UI)를 초기화하는 메서드
+    //activity_character.xml 파일에서 id를 가진 뷰를 제어
+    private void setupViews() {
         selectedCharacterImage = findViewById(R.id.selectedItemImage);
         selectedCharacterDescription = findViewById(R.id.selectedItemDescription);
         progressTextView = findViewById(R.id.progressTextView);
-        Button CollectButton = findViewById(R.id.collectButton);
+    }
 
-        setupBackButton();
-
-        // 캐릭터 획득 상태 초기화
-
-        int initialTotalCount = 5;
-        int initialAcquiredCount = 0;
-        for (int i = 0; i < initialTotalCount; i++) {
-            if (i % 2 == 0) initialAcquiredCount++; // 짝수 인덱스는 획득한 상태로 가정
-        }
-        progressTextView.setText(String.format(Locale.US, "%d/%d", initialAcquiredCount, initialTotalCount));
-
-        List<CharacterInstance> dummy = new ArrayList<>();
-        dummy.add(new CharacterInstance("단데기", 13, 32, 1, R.drawable.ch1));
-        dummy.add(new CharacterInstance("리자몽", 28, 65, 4, R.drawable.ch4));
-
-        //테스트용 캐릭터 샘플 삽입
-        List<CharacterInstance> characterInstances = new ArrayList<>();
-        for (CharacterInstance characterInstance : dummy) {
-            // 캐릭터의 이름을 확인하여 원하는 캐릭터인지 판별합니다.
-            if (characterInstance.getName().equals("단데기") || characterInstance.getName().equals("리자몽")) {
-                characterInstances.add(characterInstance); // 원하는 캐릭터라면 리스트에 추가
-            }
-        }
-
-        // 도감 버튼 클릭 시 CollectFragment(도감화면) 띄우기
-        if (CollectButton != null) {
-            CollectButton.setOnClickListener(v -> {
+    // 모든 리스너(버튼 클릭 등)를 설정하는 메서드
+    private void setupListeners() {
+        //"도감 버튼"을 눌렀을 때, CollectFragment를 화면에 띄움
+        Button collectButton = findViewById(R.id.collectButton);
+        if (collectButton != null) {
+            collectButton.setOnClickListener(v -> {
                 CollectFragment fragment = new CollectFragment();
-                /*Log.d("CharacterActivity", "Characters 리스트 크기 (Bundle 전달 전): " + Characters.size());
-                if (Characters.isEmpty()) {
-                    Log.w("CharacterActivity", " Characters 리스트가 비어 있습니다! 도감에 전달할 데이터가 없어요.");
-                }*/
-                //  인벤토리에 있는 캐릭터정보를 도감에 전달
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("inventory", new ArrayList<>(characterInstances)); // Characters는 인벤토리 리스트
-                fragment.setArguments(bundle);
-
-                fragment.setOnCodexProgressListener(CharacterActivity.this);
                 fragment.show(getSupportFragmentManager(), "collect");
             });
         }
-
-        // RecyclerView 초기화
-        RecyclerView characterRecyclerView = findViewById(R.id.inventoryRecyclerView);
-        characterRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-
-
-
-        // 어댑터 생성 및 클릭 리스너 설정
-        CharacterAdapter characterAdapter = new CharacterAdapter(characterInstances, this::displaySelectedItemDetails);
-        characterRecyclerView.setAdapter(characterAdapter);
-
-        // 앱 시작 시 첫 번째 아이템 상세 정보 표시
-        if (!characterInstances.isEmpty()) {
-            displaySelectedItemDetails(characterInstances.get(0));
-        }
-    }
-
-
-
-    //선택된 아이템 상세보기
-    private void displaySelectedItemDetails(CharacterInstance item) {
-        if (item != null) {
-            selectedCharacterImage.setImageResource(item.getImageId());
-            selectedCharacterDescription.setText(
-                    String.format("%s - HP: %d / ATK: %d", item.getName(), item.getHp(), item.getAttack())
-            );
-        }
-    }
-
-    @Override//도감률
-    public void onCodexProgressUpdated(int acquiredCount, int totalCount) {
-        progressTextView.setText(String.format(Locale.US, "%d/%d", acquiredCount, totalCount));
-    }
-    //뒤로가기 버튼
-    private void setupBackButton() {
+        //"뒤로가기"버튼을 눌렀을 때, MainActivity로 돌아감
         ImageView backButton = findViewById(R.id.backButton);
         if (backButton != null) {
             backButton.setOnClickListener(v -> {
@@ -126,4 +113,54 @@ public class CharacterActivity extends AppCompatActivity implements CollectFragm
         }
     }
 
+    // 데이터 매니저와 어댑터 등 로직을 설정하는 메서드
+    private void setupManagers() {
+        myCharacterManager = new MyCharacterManager(this);
+        RecyclerView characterRecyclerView = findViewById(R.id.inventoryRecyclerView);
+
+        //캐릭터 배치(3열 그리드)
+        characterRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+
+        characterAdapter = new CharacterAdapter(myCharacters, this::displaySelectedChar);
+        characterRecyclerView.setAdapter(characterAdapter);
+    }
+
+    //선택된 캐릭터의 상세정보를 상단 공간에 표시
+    private void displaySelectedChar(CharacterInstance selectedchar) {
+        if (selectedchar != null) {
+            int imageId = getResources().getIdentifier(
+                    selectedchar.getImageId(),
+                    "drawable",
+                    getPackageName()
+            );
+            if(imageId !=0){
+                selectedCharacterImage.setImageResource(imageId);
+            }
+            this.selectedCharacterDescription.setText(
+                    String.format(Locale.US, "%s - HP: %d / ATK: %d \nDIRT: %d", selectedchar.getName(), selectedchar.getHp(), selectedchar.getAttack(), selectedchar.getDirt())
+            );
+        }
+    }
+    // Firebase에서 도감 진행률을 불러옵니다
+    private void loadCodexProgress() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            DatabaseReference codexRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("codex");
+
+            codexRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int acquiredCount = (int) snapshot.getChildrenCount();
+                    int totalCount = CharacterList.BASE_POOL.size();
+                    progressTextView.setText(String.format(Locale.US, "%d/%d", acquiredCount, totalCount));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("CharacterActivity", "도감 진행률 불러오기 실패: " + error.getMessage());
+                }
+            });
+        }
+    }
 }
