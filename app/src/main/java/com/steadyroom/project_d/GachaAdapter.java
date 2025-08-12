@@ -46,7 +46,16 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         holder.tvAttack.setText("Atk: " + characterInstance.getAttack());
         holder.tvHP.setText("HP: " + characterInstance.getHp());
         holder.tvDirt.setText("Dirt: " + characterInstance.getDirt());
-        holder.imageView.setImageResource(characterInstance.getImageId());
+
+        //holder.imageView.setImageResource(characterInstance.getImageId());
+        int imageResId = holder.itemView.getContext().getResources().getIdentifier(
+                characterInstance.getImageId(),
+                "drawable",
+                holder.itemView.getContext().getPackageName()
+        );
+        if (imageResId !=0){
+            holder.imageView.setImageResource(imageResId);;
+        }
 
         CharacterTemplate template = findTemplateByName(characterInstance.getName());
         if (template != null) {
@@ -82,7 +91,10 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
             // 3. (선택) 화면에서 카드 제거 등
             Toast.makeText(context, characterInstance.getName() + " 획득!", Toast.LENGTH_SHORT).show();
 
-            // 4. (선택) 완료 콜백 등 처리
+            // 획득한 캐릭터를 도감(codex)에 기록하는 메서드 호출
+            saveAcquiredCharacterToCodex(characterInstance.getName());
+
+            // 5. (선택) 완료 콜백 등 처리
             // dbRef.setValue(…).addOnCompleteListener(task -> { ... })
         });
     }
@@ -143,4 +155,19 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         }
         return null; // 못 찾으면 null
     }
+    private void saveAcquiredCharacterToCodex(String characterName) {
+        if (userRef != null) {
+            // users/{UID}/codex 경로에 접근
+            DatabaseReference codexRef = userRef.child("codex");
+
+            // 획득한 캐릭터 이름으로 노드를 생성하고 값을 true로 설정
+            // 이렇게 하면, 이미 있는 캐릭터를 다시 뽑아도 덮어쓰기만 하므로 효율적입니다.
+            codexRef.child(characterName).setValue(true);
+        }
+    }
+
+
+
+
+
 }

@@ -61,5 +61,6 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.google.android.material:material:1.3.0")
     implementation("com.google.android.exoplayer:exoplayer:2.15.1")
+    implementation("androidx.annotation:annotation:1.7.1")
 }
 
