@@ -20,9 +20,6 @@
             android:name=".GachaActivity"
             android:exported="false" />
         <activity
-            android:name=".PointManager"
-            android:exported="false" />
-        <activity
             android:name=".SettingActivity"
             android:exported="false" />
         <activity

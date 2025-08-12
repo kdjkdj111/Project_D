@@ -155,16 +155,20 @@ public class BattleActivity extends AppCompatActivity {
                     updatePlayerStatus(data, uid.equals(myUid));
                 }
 
-//                Map res = (Map) roomData.get("result");
-//                if (!isBattleEnded && "finished".equals(roomData.get("state"))) {
-//                    isBattleEnded = true;
-//                    disableBattleInputs();
-//                    if (res != null) {
-//                        String myResult = (String) res.get(myUid);
-//                        if (myResult != null) showBattleResultDialog("win".equals(myResult));
-//                    }
-//                    return;
-//                }
+                String state = (String) roomData.get("state");
+                if (!isBattleEnded && "finished".equals(state)) {
+                    isBattleEnded = true;
+                    disableBattleInputs();
+
+                    Map<String, Object> result = (Map<String, Object>) roomData.get("result");
+                    if (result != null) {
+                        String myResult = (String) result.get(myUid);
+                        if (myResult != null) {
+                            showBattleResultDialog("win".equals(myResult));
+                        }
+                    }
+                    return; // 종료
+                }
 
                 updateTurnUI();
                 updateButtonsClickable();
@@ -373,6 +377,54 @@ public class BattleActivity extends AppCompatActivity {
         roomRef.child("result").child(myUid).setValue(result);
         roomRef.child("result").child(opponentUid).setValue(result.equals("win") ? "lose" : "win");
     }
+
+    private void surrender() {
+        if (opponentUid == null) return; // 상대방 UID 없으면 무시
+
+        roomRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData currentData) {
+                Map<String, Object> roomData = (Map<String, Object>) currentData.getValue();
+                if (roomData == null) return Transaction.abort();
+
+                // 이미 끝난 경기면 패스
+                if ("finished".equals(roomData.get("state"))) return Transaction.abort();
+
+                Map<String, Object> result = (Map<String, Object>) roomData.get("result");
+                if (result == null) result = new java.util.HashMap<>();
+
+                result.put(myUid, "lose");
+                result.put(opponentUid, "win");
+
+                roomData.put("state", "finished");
+                roomData.put("result", result);
+
+                currentData.setValue(roomData);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                if (committed) {
+                    isBattleEnded = true;
+                    runOnUiThread(() -> {
+                        Toast.makeText(BattleActivity.this, "항복 처리되었습니다.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 전투가 끝나지 않았고, 단순 회전이 아닐 때 = 도중에 나간 경우
+        if (!isBattleEnded) {
+            surrender();
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
