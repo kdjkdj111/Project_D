@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project_D">
+
         <activity
             android:name=".BattleActivity"
             android:exported="false" />
@@ -22,24 +23,30 @@
         <activity
             android:name=".SettingActivity"
             android:exported="false" />
+
+        <!-- 앱 시작 시 가장 먼저 실행되는 메인 액티비티 -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ShopActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
+        <activity
+            android:name=".BagActivity"
+            android:exported="false" />
         <activity
             android:name=".CharacterActivity"
             android:exported="false" />
+
     </application>
 
 </manifest>
