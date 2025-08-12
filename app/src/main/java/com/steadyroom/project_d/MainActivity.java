@@ -40,9 +40,9 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnSet;
+    private ImageButton btnSet;
     private ImageButton btnGacha;
-    private Button btnShop;
+    private ImageButton btnShop;
     private ImageButton btnChra;
     private ImageButton btnBag;
     private Button btncheck;
