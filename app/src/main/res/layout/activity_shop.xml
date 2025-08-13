@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!--  뒤로가기 버튼 -->
+        <!-- 뒤로가기 버튼 -->
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="48dp"
@@ -20,6 +20,18 @@
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_revert"
             android:contentDescription="뒤로가기" />
+
+        <!-- 포인트 표시 -->
+        <TextView
+            android:id="@+id/user_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="포인트: 0"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
 
         <!-- 패키지 -->
         <LinearLayout
@@ -129,7 +141,7 @@
                 android:text="구매" />
         </LinearLayout>
 
-        <!-- 몬스터 2배 생성 -->
+        <!-- 먼지 2배 생성 -->
         <LinearLayout
             android:id="@+id/itemDoubleMonster"
             android:layout_width="match_parent"
