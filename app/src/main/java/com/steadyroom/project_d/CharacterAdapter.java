@@ -41,8 +41,15 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Inve
         CharacterInstance item = itemList.get(position); // 현재 위치의 아이템 데이터 가져오기
 
         holder.itemName.setText(item.getName()); // 아이템(캐릭터) 이름 설정
-        holder.itemImage.setImageResource(item.getImageId()); // 아이템(캐릭터) 이미지 설정
-
+        // String ID를 int 리소스 ID로 변환
+        int imageResId = holder.itemView.getContext().getResources().getIdentifier(
+                item.getImageId(),
+                "drawable",
+                holder.itemView.getContext().getPackageName()
+        );
+        if (imageResId != 0) {
+            holder.itemImage.setImageResource(imageResId);
+        }
         // 아이템 클릭 이벤트 처리
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

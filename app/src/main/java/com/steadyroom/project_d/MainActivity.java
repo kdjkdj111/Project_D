@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 
 import android.os.Process;
@@ -15,11 +14,8 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.TouchDelegate;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -40,11 +36,11 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton btnSet;
-    private ImageButton btnGacha;
-    private ImageButton btnShop;
-    private ImageButton btnChra;
-    private ImageButton btnBag;
+    private Button btnSet;
+    private Button btnGacha;
+    private Button btnShop;
+    private Button btnChra;
+    private Button btnBag;
     private Button btncheck;
     private Button btnBattle;
     private TextView textPoint;
@@ -55,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private ValueEventListener waitOpponentListener; // 대기 리스너 참조 변수화
 
     private boolean isMatching = false; //매칭 취소 로직
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,11 +167,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //클릭 시 가방으로 이동
-        btnBag =findViewById(R.id.btn_bag);
+        btnBag = findViewById(R.id.btn_bag);
         btnBag.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                Intent intent = new Intent(MainActivity.this,SettingActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,BagActivity.class);
                 startActivity(intent);
             }
         });
@@ -230,23 +226,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (waitOpponentListener != null && currentWaitingRoomId != null) {
-            roomsRef.child(currentWaitingRoomId).removeEventListener(waitOpponentListener);
-            waitOpponentListener = null;
-            currentWaitingRoomId = null;
+    protected void onStop() {
+        super.onStop();
+        if (isMatching) {
+            cancelMatchSearch(() -> {
+                Toast.makeText(this, "매칭이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+                isMatching = false;
+                btnBattle.setText("배틀 시작");
+                btnBattle.setEnabled(true);
+            });
         }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (waitOpponentListener != null && currentWaitingRoomId != null) {
-            roomsRef.child(currentWaitingRoomId).removeEventListener(waitOpponentListener);
-            waitOpponentListener = null;
-            currentWaitingRoomId = null;
-        }
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     public void checkAndCreateUserInDatabase() {
@@ -339,9 +333,8 @@ public class MainActivity extends AppCompatActivity {
 
                                         Map<String, Object> players = (Map<String, Object>) roomData.get("players");
                                         if (players == null) players = new HashMap<>();
-                                        players.put(myUid, myCharacterData);
-
                                         myCharacterData.put("skillLeft",3);
+                                        players.put(myUid, myCharacterData);
                                         roomData.put("players", players);
                                         roomData.put("state", "playing");
                                         roomData.put("turn", myUid);

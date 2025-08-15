@@ -6,14 +6,14 @@ public class CharacterTemplate {
     private int minAttack, maxAttack;
     private int minHp, maxHp;
     private int minDirt, maxDirt;
-    private int imageId;
+    private String imageId;
     private double appearChance;
 
     public CharacterTemplate() {
     }
 
     public CharacterTemplate(String name, int minAttack, int maxAttack, int minHp, int maxHp,
-                             int minDirt, int maxDirt, int imageId, double appearChance) {
+                             int minDirt, int maxDirt, String imageId, double appearChance) {
         this.name = name;
         this.minAttack = minAttack; this.maxAttack = maxAttack;
         this.minHp = minHp; this.maxHp = maxHp;
@@ -40,8 +40,8 @@ public class CharacterTemplate {
     public int getMinDirt() { return minDirt; }
     public void setMinDirt(int minDirt) { this.minDirt = minDirt; }
 
-    public int getImageId() { return imageId; }
-    public void setImageId(int imageId) { this.imageId = imageId; }
+    public String getImageId() { return imageId; }
+    public void setImageId(String imageId) { this.imageId = imageId; }
 
     public double getAppearChance() { return appearChance; }
     public void setAppearChance(double appearChance) { this.appearChance = appearChance; }
