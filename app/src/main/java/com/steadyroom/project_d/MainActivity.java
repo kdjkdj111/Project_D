@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,11 +37,11 @@ import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnSet;
-    private Button btnGacha;
-    private Button btnShop;
-    private Button btnChra;
-    private Button btnBag;
+    private ImageButton btnSet;
+    private ImageButton btnGacha;
+    private ImageButton btnShop;
+    private ImageButton btnChra;
+    private ImageButton btnBag;
     private Button btncheck;
     private Button btnBattle;
     private TextView textPoint;
