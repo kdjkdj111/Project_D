@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="wrap_content"
+    android:layout_width="411dp"
     android:layout_height="731dp"
     android:layout_gravity="center"
     tools:context=".MainActivity"
@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/backgroundImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="411dp"
+        android:layout_height="731dp"
         android:scaleType="centerCrop"
         android:src="@drawable/vacuum_inner"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,7 +59,7 @@
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
-        android:src="@drawable/gaer"
+        android:src="@drawable/gaer_pressed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +71,7 @@
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
-        android:src="@drawable/smartphone_pixel"
+        android:src="@drawable/smartphone_pixel_pressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -84,7 +84,7 @@
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
-        android:src="@drawable/snack_machine"
+        android:src="@drawable/snack_machine_pressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -97,7 +97,7 @@
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
-        android:src="@drawable/library"
+        android:src="@drawable/library_pressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -110,7 +110,7 @@
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
-        android:src="@drawable/trashcan"
+        android:src="@drawable/trashcan_pressed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -121,9 +121,9 @@
         android:text="Battle!!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.811"
+        app:layout_constraintHorizontal_bias="0.564"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.122" />
+        app:layout_constraintVertical_bias="0.68" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
