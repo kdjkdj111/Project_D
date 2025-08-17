@@ -46,6 +46,7 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         holder.tvAttack.setText("Atk: " + characterInstance.getAttack());
         holder.tvHP.setText("HP: " + characterInstance.getHp());
         holder.tvDirt.setText("Dirt: " + characterInstance.getDirt());
+        holder.tvPower.setText("전투력: " + characterInstance.getPower());
 
         //holder.imageView.setImageResource(characterInstance.getImageId());
         int imageResId = holder.itemView.getContext().getResources().getIdentifier(
@@ -107,7 +108,7 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
     // ViewHolder 내부 클래스
     public class GachaViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView tvName, tvAttack, tvHP, tvDirt, tvAcquire, tvChance;
+        TextView tvName, tvAttack, tvHP, tvDirt, tvAcquire, tvChance, tvPower;
         Button btnGet;
 
         public GachaViewHolder(View itemView) {
@@ -120,6 +121,7 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
             btnGet = itemView.findViewById(R.id.btn_get);
             tvAcquire = itemView.findViewById(R.id.tv_Acquire);
             tvChance = itemView.findViewById(R.id.tv_chance);
+            tvPower = itemView.findViewById(R.id.tv_Power);
         }
     }
     public CharacterInstance pickRandomCharacter(List<CharacterTemplate> pool) {
