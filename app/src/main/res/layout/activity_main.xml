@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/backgroundImage"
-        android:layout_width="411dp"
-        android:layout_height="731dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         android:src="@drawable/vacuum_inner"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -121,21 +121,9 @@
         android:text="Battle!!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.871"
+        app:layout_constraintHorizontal_bias="0.811"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.215" />
-
-    <Button
-        android:id="@+id/btn_battle"
-        android:layout_width="193dp"
-        android:layout_height="96dp"
-        android:text="Battle!!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.792" />
+        app:layout_constraintVertical_bias="0.122" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
