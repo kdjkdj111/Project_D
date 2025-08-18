@@ -37,7 +37,7 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
     private MyCharacterManager myCharacterManager;
     private List<CharacterInstance> myCharacters = new ArrayList<>();
 
-    // 새로 추가할 부분
+    
     private Button sellButton; // 판매 버튼을 위한 변수
     private Button cancelButton;
     private boolean isSellingMode = false; // 현재 판매 모드인지 확인하는 변수
