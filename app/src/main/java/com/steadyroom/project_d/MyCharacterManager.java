@@ -51,10 +51,10 @@ public class MyCharacterManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<CharacterInstance> myCharacters = new ArrayList<>();
                 for (DataSnapshot characterSnapshot : dataSnapshot.getChildren()) {
-                    if (!characterSnapshot.exists()) continue; // ✅ 방어1
+                    if (!characterSnapshot.exists()) continue; //  방어1
                     // 데이터베이스의 각 캐릭터 객체를 Character 클래스로 변환해서 리스트에 추가
                     CharacterInstance character = characterSnapshot.getValue(CharacterInstance.class);
-                    if (character == null) continue; // ✅ 방어2
+                    if (character == null) continue; //  방어2
 
                     // DataSnapshot의 키(0, 1, 2...)를 가져와서 CharacterInstance에 저장
                     String firebaseKey = characterSnapshot.getKey();
