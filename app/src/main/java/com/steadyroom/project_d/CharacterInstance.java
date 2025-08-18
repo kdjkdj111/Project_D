@@ -7,7 +7,7 @@ public class CharacterInstance {
     private int dirt;
     private int power;
     private String imageId;
-
+    private String firebaseKey;
     public CharacterInstance() {}
 
     public CharacterInstance(String name, int attack, int hp, int dirt, String imageId) {
@@ -36,6 +36,8 @@ public class CharacterInstance {
     public String getImageId() { return imageId; }
     public void setImageId(String imageId) { this.imageId = imageId; }
 
+    public String getFirebaseKey() {return firebaseKey;}
+    public void setFirebaseKey(String firebaseKey) {this.firebaseKey = firebaseKey;}
     private void calculatePower() {
         this.power = (int)Math.round(
                 attack * 2.0 +

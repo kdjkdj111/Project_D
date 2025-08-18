@@ -22,11 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
-
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+import android.view.View;
 public class CharacterActivity extends AppCompatActivity implements MyCharacterManager.OnDataLoadListener{
     //View 요소 (UI)
     private ImageView selectedCharacterImage;
@@ -37,6 +37,14 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
     private MyCharacterManager myCharacterManager;
     private List<CharacterInstance> myCharacters = new ArrayList<>();
 
+    // 새로 추가할 부분
+    private Button sellButton; // 판매 버튼을 위한 변수
+    private Button cancelButton;
+    private boolean isSellingMode = false; // 현재 판매 모드인지 확인하는 변수
+    private List<CharacterInstance> selectedForSale = new ArrayList<>(); // 판매할 캐릭터 리스트
+    public interface OnCharacterSelectListener {
+        void onCharacterSelected(CharacterInstance character, boolean isSelected);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +98,8 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
         selectedCharacterImage = findViewById(R.id.selectedItemImage);
         selectedCharacterDescription = findViewById(R.id.selectedItemDescription);
         progressTextView = findViewById(R.id.progressTextView);
+        sellButton = findViewById(R.id.sellButton);
+        cancelButton = findViewById(R.id.cancelButton);
     }
 
     // 모든 리스너(버튼 클릭 등)를 설정하는 메서드
@@ -111,17 +121,55 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
                 finish();
             });
         }
+        //"판매"버튼을 눌렀을 때, 판매 모드로 설정
+        if (sellButton != null) {
+            sellButton.setOnClickListener(v -> {
+                if (!isSellingMode) {
+                    // 판매 모드 진입
+                    isSellingMode = true;
+                    selectedForSale.clear(); // 판매 리스트 초기화
+                    sellButton.setText("판매 확인"); // "판매"버튼을 "판매 확인"으로 텍스트 변경
+                    characterAdapter.setSellingMode(true); // 어댑터에 판매 모드 알림
+                    cancelButton.setVisibility(View.VISIBLE);
+                } else {
+                    // 판매 모드 종료 및 판매 진행
+                    performSale(); // 판매 로직 실행
+                }
+            });
+        }
+        // cancelButton 클릭 리스너
+        if (cancelButton != null) {
+            cancelButton.setOnClickListener(v -> {
+                // 판매 모드 해제
+                isSellingMode = false;
+                selectedForSale.clear();
+                sellButton.setText("판매"); //  버튼 텍스트 되돌리기
+                characterAdapter.setSellingMode(false);
+                cancelButton.setVisibility(View.GONE); // 취소 버튼 숨기기
+            });
+        }
     }
 
     // 데이터 매니저와 어댑터 등 로직을 설정하는 메서드
     private void setupManagers() {
         myCharacterManager = new MyCharacterManager(this);
         RecyclerView characterRecyclerView = findViewById(R.id.inventoryRecyclerView);
-
-        //캐릭터 배치(3열 그리드)
         characterRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
 
-        characterAdapter = new CharacterAdapter(myCharacters, this::displaySelectedChar);
+        // 어댑터에 OnCharacterSelectListener 인터페이스 구현체를 전달
+        characterAdapter = new CharacterAdapter(myCharacters, this::displaySelectedChar, new OnCharacterSelectListener() {
+            @Override
+            public void onCharacterSelected(CharacterInstance character, boolean isSelected) {
+                if (isSelected) {
+                    if (!selectedForSale.contains(character)) {
+                        selectedForSale.add(character);
+                    }
+                } else {
+                    selectedForSale.remove(character);
+                }
+                characterAdapter.notifyItemChanged(myCharacters.indexOf(character));
+            }
+        });
         characterRecyclerView.setAdapter(characterAdapter);
     }
 
@@ -163,4 +211,76 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
             });
         }
     }
+    private void performSale() {
+        if (selectedForSale.isEmpty()) {
+            Toast.makeText(this, "판매할 캐릭터를 선택하세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 선택된 캐릭터들을 삭제 (반복문)
+        for (CharacterInstance character : selectedForSale) {
+            deleteCharacterFromFirebase(character);
+        }
+
+        // 판매 모드 초기화
+        isSellingMode = false;
+        selectedForSale.clear();
+        sellButton.setText("판매"); // 버튼 텍스트 원상복구
+        characterAdapter.setSellingMode(false); // 어댑터에 판매 모드 종료 알림
+        cancelButton.setVisibility(View.GONE);
+        myCharacterManager.loadMyCharacters();
+        loadCodexProgress();
+    }
+    //숫자 key{0..1..2..3} 삭제시 인덱스 재정렬
+    private void reindexCharacters(String uid) {
+        DatabaseReference charactersRef = FirebaseDatabase.getInstance()
+                .getReference("users").child(uid).child("characters");
+
+        //데이터베이스의 캐릭터 데이터 가져오기
+        charactersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<CharacterInstance> reordered = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    CharacterInstance character = child.getValue(CharacterInstance.class);
+                    if (character != null) {
+                        reordered.add(character);
+                    }
+                }
+
+                // 전체 삭제 후 인덱스 0부터 재배치
+                charactersRef.removeValue().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        int index = 0;
+                        for (CharacterInstance character : reordered) {
+                            charactersRef.child(String.valueOf(index)).setValue(character);
+                            index++;
+                        }
+                        myCharacterManager.loadMyCharacters(); // UI 갱신
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CharacterActivity", "재정렬 실패: " + error.getMessage());
+            }
+        });
+    }
+    // Firebase에서 특정 캐릭터를 삭제하는 메서드
+    private void deleteCharacterFromFirebase(CharacterInstance character) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            DatabaseReference characterRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("characters").child(character.getFirebaseKey());
+
+            characterRef.removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful())
+                {
+                    reindexCharacters(uid);//  삭제 후 번호 재정렬
+                }
+            });
+        }
+    }
 }
+
