@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     tools:context=".MainActivity"
     android:padding="0dp"
@@ -15,118 +15,108 @@
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="711dp"
         android:scaleType="centerCrop"
         android:src="@drawable/vacuum_inner"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="9:16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="9:16"
-        />
+        app:layout_constraintVertical_bias="0.588" />
 
     <TextView
         android:id="@+id/text_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="50dp"
         android:text="0먼지"
         android:textColor="@color/white"
         android:textSize="50px"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage"
+        app:layout_constraintHorizontal_bias="0.096"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
 
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_check"
-        android:layout_width="81dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginEnd="336dp"
-        android:padding="10px"
-        android:text="전투력"
-        android:textSize="70px"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintVertical_bias="0.306" />
 
     <ImageButton
         android:id="@+id/btn_set"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="328dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="324dp"
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
         android:src="@drawable/gaer_pressed"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage" />
 
     <ImageButton
         android:id="@+id/btn_gacha"
         android:layout_width="108dp"
         android:layout_height="248dp"
-        android:layout_marginBottom="65dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="64dp"
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
         android:src="@drawable/smartphone_pixel_pressed"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage" />
 
     <ImageButton
         android:id="@+id/btn_shop"
         android:layout_width="80dp"
         android:layout_height="128dp"
-        android:layout_marginStart="324dp"
-        android:layout_marginBottom="281dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="273dp"
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
         android:src="@drawable/snack_machine_pressed"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage" />
 
     <ImageButton
         android:id="@+id/btn_chra"
         android:layout_width="66dp"
         android:layout_height="97dp"
-        android:layout_marginStart="344dp"
-        android:layout_marginBottom="66dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="64dp"
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
         android:src="@drawable/library_pressed"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage" />
 
     <ImageButton
         android:id="@+id/btn_bag"
         android:layout_width="67dp"
         android:layout_height="96dp"
-        android:layout_marginStart="256dp"
-        android:layout_marginBottom="66dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="64dp"
         android:background="@null"
         android:contentDescription="@string/common_signin_button_text"
         android:scaleType="fitXY"
         android:src="@drawable/trashcan_pressed"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage" />
 
     <Button
         android:id="@+id/btn_battle"
         android:layout_width="193dp"
         android:layout_height="96dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="116dp"
         android:text="Battle!!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.564"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
+        app:layout_constraintHorizontal_bias="0.775"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btnShop;
     private ImageButton btnChra;
     private ImageButton btnBag;
-    private Button btncheck;
     private Button btnBattle;
     private TextView textPoint;
 
@@ -76,19 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
         textPoint = findViewById(R.id.text_point);
 
-        //조회 버튼 클릭 시 포인트 표시
-        btncheck = findViewById(R.id.btn_check);
-        btncheck.setOnClickListener(v -> {
-            // 🔁 기기 사용 시간 기반 포인트 적립
-            PointManager.getInstance().PointsEarned(MainActivity.this, () -> {
-                runOnUiThread(() -> {
-                    Toast.makeText(MainActivity.this, "포인트 적립 완료", Toast.LENGTH_SHORT).show();
-                    updatePointText();
-                });
-            });
-        });
 
-        updatePointText();
+
 
         //클릭 시 전투 시작. (마음 단단히 먹으시길)
         roomsRef = FirebaseDatabase.getInstance().getReference("battleRooms");
