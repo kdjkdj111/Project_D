@@ -1,5 +1,6 @@
 package com.steadyroom.project_d;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BattleActivity extends AppCompatActivity {
@@ -46,7 +48,7 @@ public class BattleActivity extends AppCompatActivity {
     private int myDirt, opponentDirt;
     private int mySkillLeft, opponentSkillLeft;
 
-    private String currentTurnUid;
+    private Map<String, String> currentActions = new HashMap<>();
 
 
     @Override
@@ -115,22 +117,16 @@ public class BattleActivity extends AppCompatActivity {
 
     private void setupListeners() { //리스너 세팅
         btnAttack.setOnClickListener(v -> {
-            if (!isMyTurn()) return;
-            performBasicAttack();
+            selectAction("attack");
         });
 
         btnSkill.setOnClickListener(v -> {
-            if (!isMyTurn()) return;
             if (mySkillLeft <= 0) {
                 Toast.makeText(this, "스킬 횟수 모두 사용했습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            performSkillAttack();
+            selectAction("skill");
         });
-    }
-
-    private boolean isMyTurn() { //턴 확인
-        return myUid.equals(currentTurnUid);
     }
 
     private void listenRoomDataChanges() { //전투 데이터 실시간 반영
@@ -142,19 +138,46 @@ public class BattleActivity extends AppCompatActivity {
                 Map<String, Object> roomData = (Map<String, Object>) snapshot.getValue();
                 if (roomData == null) return;
 
-                currentTurnUid = (String) roomData.get("turn");
-
                 Map<String, Object> players = (Map<String, Object>) roomData.get("players");
                 if (players == null) return;
 
                 findOpponentUid(players);
 
+                // 플레이어 상태 업데이트
                 for (Map.Entry<String, Object> entry : players.entrySet()) {
                     String uid = entry.getKey();
                     Map<String, Object> data = (Map<String, Object>) entry.getValue();
                     updatePlayerStatus(data, uid.equals(myUid));
                 }
 
+                // 동시 선택 행동 읽기
+                Map<String, String> actions = new HashMap<>();
+                if (roomData.get("actions") instanceof Map) {
+                    Map<String, Object> rawActions = (Map<String, Object>) roomData.get("actions");
+                    for (String key : rawActions.keySet()) {
+                        Object val = rawActions.get(key);
+                        if (val instanceof String) {
+                            actions.put(key, (String) val);
+                        }
+                    }
+                }
+
+                if (actions.containsKey(myUid) && actions.containsKey(opponentUid)) {
+                    if (myUid.compareTo(opponentUid) < 0) {
+                        processTurn(actions);
+                    }
+                } else {
+                    // 행동 대기 중 UI 처리
+                    if (actions.containsKey(myUid)) {
+                        tvTurn.setText("상대 입력 대기 중...");
+                        disableBattleInputs();
+                    } else {
+                        tvTurn.setText("행동 선택하세요");
+                        updateButtonsClickable();
+                    }
+                }
+
+                // 경기 종료 처리
                 String state = (String) roomData.get("state");
                 if (!isBattleEnded && "finished".equals(state)) {
                     isBattleEnded = true;
@@ -167,13 +190,10 @@ public class BattleActivity extends AppCompatActivity {
                             showBattleResultDialog("win".equals(myResult));
                         }
                     }
-                    return; // 종료
+                    //return;
                 }
-
-                updateTurnUI();
-                updateButtonsClickable();
-                checkBattleEnd();
             }
+
 
             @Override
             public void onCancelled(DatabaseError error) {
@@ -183,6 +203,103 @@ public class BattleActivity extends AppCompatActivity {
         roomRef.addValueEventListener(roomListener);
 
     }
+
+    private void processTurn(Map<String, String> actions) {
+        String myAction = actions.get(myUid);
+        String oppAction = actions.get(opponentUid);
+
+        // 결과 계산 예시 (간단한 공격-방어 판정)
+        int damageToOpponent = 0;
+        int damageToMe = 0;
+
+        if ("attack".equals(myAction)) {
+            if ("defense".equals(oppAction)) damageToOpponent = 0;  // 방어 성공
+            else damageToOpponent = myAttack;
+        } else if ("skill".equals(myAction)) {
+            if ("defense".equals(oppAction)) damageToOpponent = myDirt / 2; // 스킬은 반감
+            else damageToOpponent = myDirt;
+            mySkillLeft = Math.max(0, mySkillLeft - 1);
+        } else {
+            damageToOpponent = 0;
+        }
+
+        // 상대 공격 처리 (mirror)
+        if ("attack".equals(oppAction)) {
+            if ("defense".equals(myAction)) damageToMe = 0;
+            else damageToMe = opponentAttack;
+        } else if ("skill".equals(oppAction)) {
+            if ("defense".equals(myAction)) damageToMe = opponentDirt / 2;
+            else damageToMe = opponentDirt;
+            opponentSkillLeft = Math.max(0, opponentSkillLeft - 1);
+        } else{
+            damageToMe = 0;
+        }
+
+        // DB 트랜잭션으로 HP 및 스킬횟수 업데이트, actions 제거하며 턴 넘김
+        int finalDamageToOpponent = damageToOpponent;
+        int finalDamageToMe = damageToMe;
+        roomRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData currentData) {
+                Map<String, Object> rd = (Map<String, Object>) currentData.getValue();
+                if (rd == null) return Transaction.abort();
+
+                Map<String, Object> players = (Map<String, Object>) rd.get("players");
+                if (players == null) return Transaction.abort();
+
+                Map<String, Object> myData = (Map<String, Object>) players.get(myUid);
+                Map<String, Object> opData = (Map<String, Object>) players.get(opponentUid);
+                if (myData == null || opData == null) return Transaction.abort();
+
+                int opHp = getIntFromObject(opData.get("hp"));
+                int myHp = getIntFromObject(myData.get("hp"));
+
+                opHp = Math.max(0, opHp - finalDamageToOpponent);
+                myHp = Math.max(0, myHp - finalDamageToMe);
+
+                opData.put("hp", opHp);
+                myData.put("hp", myHp);
+                myData.put("skillLeft", mySkillLeft);
+                opData.put("skillLeft", opponentSkillLeft);
+
+                players.put(myUid, myData);
+                players.put(opponentUid, opData);
+
+                rd.put("players", players);
+
+                // actions 초기화하여 다음 턴 준비
+                rd.put("actions", null);
+
+                // 종료 체크
+                if (opHp == 0 || myHp == 0) {
+                    rd.put("state", "finished");
+                    Map<String, Object> result = (Map<String, Object>) rd.get("result");
+                    if (result == null) result = new java.util.HashMap<>();
+                    if (opHp == 0) {
+                        result.put(myUid, "win");
+                        result.put(opponentUid, "lose");
+                    } else {
+                        result.put(myUid, "lose");
+                        result.put(opponentUid, "win");
+                    }
+                    rd.put("result", result);
+                }
+
+                currentData.setValue(rd);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+                if (!committed) {
+                    runOnUiThread(() -> Toast.makeText(BattleActivity.this, "턴 처리 실패:" + (error != null ? error.getMessage() : ""), Toast.LENGTH_SHORT).show());
+                } else {
+                    updateTurnUI();
+                }
+            }
+        });
+    }
+
 
     private void updatePlayerStatus(Map<String, Object> data, boolean isMyself) {
         int hp = getIntFromObject(data.get("hp"));
@@ -226,99 +343,23 @@ public class BattleActivity extends AppCompatActivity {
         return 0;
     }
 
+
     private void updateTurnUI() { //현재 턴 확인
-        if (isMyTurn()) {
-            tvTurn.setText("내 턴");
-            tvTurn.setTextColor(Color.BLUE);
-        } else {
-            tvTurn.setText("상대 턴");
-            tvTurn.setTextColor(Color.RED);
-        }
+        tvTurn.setText("행동을 선택해주십시오.");
+    }
+
+    private void selectAction(String actionType) {
+        roomRef.child("actions").child(myUid).setValue(actionType);
+        disableBattleInputs();
+        tvTurn.setText("상대 입력 대기 중...");
     }
 
     private void updateButtonsClickable() { //버튼 활성화
-        boolean enabled = isMyTurn();
-        btnAttack.setEnabled(enabled);
-        btnSkill.setEnabled(enabled && mySkillLeft > 0);
-    }
-
-    private void performBasicAttack() {
-        // 샘플 대미지 15 고정
-        int damage = myAttack;
-        dealDamageToOpponent(damage);
-    }
-
-    private void performSkillAttack() {
-        if (mySkillLeft <= 0) return;
-
-        int skillDamage = myDirt;
-        dealDamageToOpponent(skillDamage, true); // true는 스킬 공격임을 표시
-    }
-
-    private void dealDamageToOpponent(int damage) { //일반 공격
-        dealDamageToOpponent(damage, false);
+        btnAttack.setEnabled(true);
+        btnSkill.setEnabled(mySkillLeft > 0);
     }
 
 
-    private void dealDamageToOpponent(int damage, boolean isSkill) { //스킬 공격
-        roomRef.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData currentData) {
-
-                Map<String, Object> roomData = (Map<String, Object>) currentData.getValue();
-                if (roomData == null) return Transaction.abort();
-
-                String turn = (String) roomData.get("turn");
-                if (turn == null || !turn.equals(myUid)) return Transaction.abort();
-
-                Map<String, Object> players = (Map<String, Object>) roomData.get("players");
-                if (players == null) return Transaction.abort();
-
-                if (opponentUid == null || !players.containsKey(opponentUid)) return Transaction.abort();
-                if (!players.containsKey(myUid)) return Transaction.abort();
-
-                Map<String, Object> opponentData = (Map<String, Object>) players.get(opponentUid);
-                Map<String, Object> myData = (Map<String, Object>) players.get(myUid);
-
-                if (opponentData == null || myData == null) return Transaction.abort();
-
-                int beforeHp = getIntFromObject(opponentData.get("hp"));
-                int afterHp = Math.max(0, beforeHp - damage);
-                opponentData.put("hp", afterHp);
-                players.put(opponentUid, opponentData);
-
-                if (isSkill) {
-                    int skillLeftBefore = getIntFromObject(myData.getOrDefault("skillLeft", 0));
-                    int skillLeftAfter = Math.max(0, skillLeftBefore - 1);
-                    myData.put("skillLeft", skillLeftAfter);
-                    players.put(myUid, myData);
-                }
-
-                if (afterHp <= 0) {
-                    roomData.put("state", "finished");
-                    Map<String, Object> result = (Map<String, Object>) roomData.get("result");
-                    if (result == null) result = new java.util.HashMap<>();
-                    result.put(myUid, "win");
-                    result.put(opponentUid, "lose");
-                    roomData.put("result", result);
-                    currentData.setValue(roomData);
-                    return Transaction.success(currentData);
-                }
-
-                // 턴 변경
-                roomData.put("turn", opponentUid);
-                currentData.setValue(roomData);
-                return Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-                if (!committed) {
-                    Toast.makeText(BattleActivity.this, "공격 처리 실패: " + (error != null ? error.getMessage() : ""), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
     private void findOpponentUid(Map<String, Object> players) {
         if (opponentUid == null) {
@@ -335,23 +376,6 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     Boolean isBattleEnded = false;
-    private void checkBattleEnd() {
-        if (isBattleEnded) return;
-
-        if (opponentHp <= 0) {
-            isBattleEnded = true;
-            // 승리
-            showBattleResultDialog(true);
-            disableBattleInputs();
-            updateRoomStateFinished("win");
-        } else if (myHp <= 0) {
-            isBattleEnded = true;
-            // 패배
-            showBattleResultDialog(false);
-            disableBattleInputs();
-            updateRoomStateFinished("lose");
-        }
-    }
 
     private void disableBattleInputs() { //버튼 비활성화
         btnAttack.setEnabled(false);
@@ -361,22 +385,50 @@ public class BattleActivity extends AppCompatActivity {
     private void showBattleResultDialog(boolean isWin) { //결과 화면 출력
         String message = isWin ? "승리하셨습니다!" : "패배하셨습니다!";
 
+        updateScore(isWin);
+
         new AlertDialog.Builder(this)
                 .setTitle("전투 종료")
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("확인", (dialog, which) -> {
                     dialog.dismiss();
-                    finish();  // 액티비티 종료, 또는 다음 화면 이동 로직 추가
+                    Intent intent = new Intent(BattleActivity.this, RankingActivity.class);
+                    startActivity(intent);
+                    finish();
                 })
                 .show();
+
+
     }
 
-    private void updateRoomStateFinished(String result) { //데이터 베이스 결과 업데이트
-        roomRef.child("state").setValue("finished");
-        roomRef.child("result").child(myUid).setValue(result);
-        roomRef.child("result").child(opponentUid).setValue(result.equals("win") ? "lose" : "win");
+    private void updateScore(boolean win) { //RankingPoint
+        DatabaseReference rankingPointRef = FirebaseDatabase.getInstance()
+                .getReference("users").child(myUid).child("rankingPoint");
+        int pointChange = win ? 15 : -10;
+
+        rankingPointRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData currentData) {
+                Integer currentValue = currentData.getValue(Integer.class);
+                int currentPoint = currentValue == null ? 0 : currentValue;
+                int newPoint = Math.max(0, currentPoint + pointChange);
+                currentData.setValue(newPoint);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot snapshot) {
+                if (committed && snapshot != null && snapshot.exists()) {
+                    int updatedPoint = snapshot.getValue(Integer.class);
+                    FirebaseDatabase.getInstance().getReference("rankings")
+                            .child(myUid)
+                            .setValue(updatedPoint);
+                }
+            }
+        });
     }
+
 
     private void surrender() {
         if (opponentUid == null) return; // 상대방 UID 없으면 무시
