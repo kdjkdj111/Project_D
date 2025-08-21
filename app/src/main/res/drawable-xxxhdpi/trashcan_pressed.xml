@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/trashcan"
+    <item android:drawable="@drawable/trashcan_2"
         android:state_pressed="false"/>
-    <item android:drawable="@drawable/trashcan_select"
+    <item android:drawable="@drawable/trashcan_select_2"
         android:state_pressed="true" />
 </selector>
