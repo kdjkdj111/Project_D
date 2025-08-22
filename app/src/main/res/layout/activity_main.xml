@@ -1,88 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_gravity="center"
+    android:background="@color/black"
+    tools:context=".MainActivity"
+    android:padding="0dp"
+    >
+
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="711dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/vacuum_inner_3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="9:16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.838" />
 
     <TextView
         android:id="@+id/text_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="270dp"
-        android:layout_marginTop="80dp"
-        android:text="포인트 : 0점"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="50dp"
+        android:text="0먼지"
+        android:textColor="@color/white"
+        android:textSize="50px"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage"
+        app:layout_constraintHorizontal_bias="0.096"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
 
-    <Button
-        android:id="@+id/btn_check"
-        android:layout_width="54dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="4dp"
-        android:padding="4dp"
-        android:text="조회"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintVertical_bias="0.306" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_set"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="설정"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="324dp"
+        android:background="@null"
+        android:contentDescription="@string/common_signin_button_text"
+        android:scaleType="fitXY"
+        android:src="@drawable/gaer_pressed"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_gacha"
-        android:layout_width="99dp"
-        android:layout_height="42dp"
-        android:text="뽑기"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="10dp"/>
+        android:layout_width="77dp"
+        android:layout_height="157dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="64dp"
+        android:background="@null"
+        android:contentDescription="@string/common_signin_button_text"
+        android:scaleType="fitXY"
+        android:src="@drawable/smartphone_pixel_pressed"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_shop"
-        android:layout_width="99dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="104dp"
-        android:text="상점"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="80dp"
+        android:layout_height="128dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="273dp"
+        android:background="@null"
+        android:contentDescription="@string/common_signin_button_text"
+        android:scaleType="fitXY"
+        android:src="@drawable/snack_machine_pressed"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_chra"
-        android:layout_width="99dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="208dp"
-        android:text="캐릭터"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-    <Button
+        android:layout_width="55dp"
+        android:layout_height="97dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="64dp"
+        android:background="@null"
+        android:contentDescription="@string/common_signin_button_text"
+        android:scaleType="fitXY"
+        android:src="@drawable/library_pressed"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage" />
+
+    <ImageButton
         android:id="@+id/btn_bag"
-        android:layout_width="99dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="312dp"
-        android:text="가방"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="67dp"
+        android:layout_height="96dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="64dp"
+        android:background="@null"
+        android:contentDescription="@string/common_signin_button_text"
+        android:scaleType="fitXY"
+        android:src="@drawable/trashcan_pressed"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage" />
 
     <Button
         android:id="@+id/btn_battle"
         android:layout_width="193dp"
         android:layout_height="96dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="116dp"
         android:text="Battle!!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.454"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.792" />
+        app:layout_constraintHorizontal_bias="0.775"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
