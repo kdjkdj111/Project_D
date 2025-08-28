@@ -50,7 +50,7 @@ public class BattleActivity extends AppCompatActivity {
     //스킬 코스트
     private static final int COST_SKILL = 3;
     private static final int COST_HEAL = 2;
-    private static final int COST_COUNTER = 1;
+    private static final int COST_COUNTER = 2;
     private static final int COST_ATTACK = 0;
 
 
