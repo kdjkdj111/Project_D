@@ -47,6 +47,12 @@ public class BattleActivity extends AppCompatActivity {
     private int myDirt, opponentDirt;
     private int mySkillPoint, opponentSkillPoint;
 
+    //스킬 코스트
+    private static final int COST_SKILL = 3;
+    private static final int COST_HEAL = 2;
+    private static final int COST_COUNTER = 1;
+    private static final int COST_ATTACK = 0;
+
 
 
     @Override
@@ -125,7 +131,7 @@ public class BattleActivity extends AppCompatActivity {
         });
 
         btnSkill.setOnClickListener(v -> {
-            if (mySkillPoint < 3) {
+            if (mySkillPoint < COST_SKILL) {
                 Toast.makeText(this, "스킬 포인트가 부족합니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -133,7 +139,7 @@ public class BattleActivity extends AppCompatActivity {
         });
 
         btnHeal.setOnClickListener(v -> {
-            if (mySkillPoint < 2) {
+            if (mySkillPoint < COST_HEAL) {
                 Toast.makeText(this, "스킬 포인트가 부족합니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -141,7 +147,7 @@ public class BattleActivity extends AppCompatActivity {
         });
 
         btnCounter.setOnClickListener(v -> {
-            if (mySkillPoint < 1) {
+            if (mySkillPoint < COST_COUNTER) {
                 Toast.makeText(this, "스킬 포인트가 부족합니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -202,7 +208,7 @@ public class BattleActivity extends AppCompatActivity {
                 if (!isBattleEnded && "finished".equals(state)) {
                     isBattleEnded = true;
                     disableBattleInputs();
-                    showResult(roomData, 3000L); // 3초 지연
+                    showResult(roomData, 2000L); // 3초 지연
                 }
             }
 
@@ -424,19 +430,19 @@ public class BattleActivity extends AppCompatActivity {
     private int costOf(String action) {
         if (action == null) return 0;
         switch (action) {
-            case "skill":   return 3;
-            case "heal":    return 2;
-            case "counter": return 1;
-            case "attack":  return 0;
+            case "skill":   return COST_SKILL;
+            case "heal":    return COST_HEAL;
+            case "counter": return COST_COUNTER;
+            case "attack":  return COST_ATTACK;
             default:        return 0;
         }
     }
 
     private void updateButtonsClickable() { //버튼 활성화
         btnAttack.setEnabled(true);
-        btnSkill.setEnabled(mySkillPoint >= 3);
-        btnHeal.setEnabled(mySkillPoint >= 2);
-        btnCounter.setEnabled(mySkillPoint >= 1);
+        btnSkill.setEnabled(mySkillPoint >= COST_SKILL);
+        btnHeal.setEnabled(mySkillPoint >= COST_HEAL);
+        btnCounter.setEnabled(mySkillPoint >= COST_COUNTER);
     }
 
     private void disableBattleInputs() { //버튼 비활성화
@@ -472,7 +478,7 @@ public class BattleActivity extends AppCompatActivity {
                 : "draw";
 
         tvTurn.setText("전투 종료... 결과 계산 중");
-        tvTurn.postDelayed(() -> showBattleResultDialog(myResult), 2000L);
+        tvTurn.postDelayed(() -> showBattleResultDialog(myResult), delayMs);
     }
 
     private void showBattleResultDialog(String myResult) {
