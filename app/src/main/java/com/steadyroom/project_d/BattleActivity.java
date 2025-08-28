@@ -509,9 +509,9 @@ public class BattleActivity extends AppCompatActivity {
 
     private void updateScore(String myResult) {
         int pointChange;
-        if ("win".equals(myResult))      pointChange = 15;   // 기존과 동일
-        else if ("lose".equals(myResult))pointChange = -10;  // 기존과 동일
-        else                             pointChange = 0;    // draw 정책
+        if ("win".equals(myResult))      pointChange = 15;
+        else if ("lose".equals(myResult))pointChange = -10;
+        else                             pointChange = 0;
 
         DatabaseReference rankingPointRef = FirebaseDatabase.getInstance()
                 .getReference("users").child(myUid).child("rankingPoint");

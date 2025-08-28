@@ -243,7 +243,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:text="기본 공격"
+                android:text="기본 공격(+)"
                 android:textSize="16sp" />
 
             <Button
@@ -252,7 +252,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:text="스킬"
+                android:text="스킬(3)"
                 android:textSize="16sp" />
         </TableRow>
 
@@ -268,7 +268,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:text="회복"
+                android:text="회복(2)"
                 android:textSize="16sp" />
 
             <Button
@@ -277,7 +277,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:text="반격"
+                android:text="반격(1)"
                 android:textSize="16sp" />
         </TableRow>
     </TableLayout>
