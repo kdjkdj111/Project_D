@@ -1,7 +1,6 @@
 package com.steadyroom.project_d;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,10 +31,10 @@ public class BattleActivity extends AppCompatActivity {
     private ImageView ivMyCharacter, ivOpponentCharacter;
     private TextView tvMyNickname, tvOpponentNickname;
     private TextView tvMyCharacterName, tvOpponentCharacterName;
-    private TextView tvMyAttack, tvMyHp, tvMyDirt, tvMySkill;
-    private TextView tvOpponentAttack, tvOpponentHp, tvOpponentDirt, tvOpponentSkill;
+    private TextView tvMyAttack, tvMyHp, tvMyDirt, tvMySkill, tvMyAction;
+    private TextView tvOpponentAttack, tvOpponentHp, tvOpponentDirt, tvOpponentSkill, tvOpponentAction;
     private TextView tvTurn;
-    private Button btnAttack, btnSkill;
+    private Button btnAttack, btnSkill, btnHeal, btnCounter;
 
     private String roomId;
     private DatabaseReference roomRef;
@@ -46,9 +45,8 @@ public class BattleActivity extends AppCompatActivity {
     private int myHp, opponentHp;
     private int myAttack, opponentAttack;
     private int myDirt, opponentDirt;
-    private int mySkillLeft, opponentSkillLeft;
+    private int mySkillPoint, opponentSkillPoint;
 
-    private Map<String, String> currentActions = new HashMap<>();
 
 
     @Override
@@ -89,14 +87,18 @@ public class BattleActivity extends AppCompatActivity {
         tvMyAttack = findViewById(R.id.tv_my_attack);
         tvMyHp = findViewById(R.id.tv_my_hp);
         tvMyDirt = findViewById(R.id.tv_my_dirt);
-        tvMySkill = findViewById(R.id.tv_my_skill);
+        tvMySkill = findViewById(R.id.tv_my_skill_count);
+        tvMyAction = findViewById(R.id.tv_my_action);
         tvOpponentAttack = findViewById(R.id.tv_opponent_attack);
         tvOpponentHp = findViewById(R.id.tv_opponent_hp);
         tvOpponentDirt = findViewById(R.id.tv_opponent_dirt);
         tvOpponentSkill = findViewById(R.id.tv_opponent_skill_count);
+        tvOpponentAction = findViewById(R.id.tv_opponent_action);
         tvTurn = findViewById(R.id.tv_turn);
         btnAttack = findViewById(R.id.btn_attack);
         btnSkill = findViewById(R.id.btn_skill);
+        btnHeal = findViewById(R.id.btn_heal);
+        btnCounter = findViewById(R.id.btn_counter);
     }
 
     private void setupInitialUI() { //UI 기본값 세팅
@@ -111,6 +113,8 @@ public class BattleActivity extends AppCompatActivity {
 
         btnAttack.setEnabled(false);
         btnSkill.setEnabled(false);
+        btnHeal.setEnabled(false);
+        btnCounter.setEnabled(false);
 
         tvTurn.setText("로딩 중...");
     }
@@ -121,11 +125,23 @@ public class BattleActivity extends AppCompatActivity {
         });
 
         btnSkill.setOnClickListener(v -> {
-            if (mySkillLeft <= 0) {
+            if (mySkillPoint <= 0) {
                 Toast.makeText(this, "스킬 횟수 모두 사용했습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
             selectAction("skill");
+        });
+
+        btnHeal.setOnClickListener(v -> {
+            if (mySkillPoint <= 0) {
+                Toast.makeText(this, "스킬 횟수 모두 사용했습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            selectAction("heal");
+        });
+
+        btnCounter.setOnClickListener(v -> {
+            selectAction("counter");
         });
     }
 
@@ -182,15 +198,7 @@ public class BattleActivity extends AppCompatActivity {
                 if (!isBattleEnded && "finished".equals(state)) {
                     isBattleEnded = true;
                     disableBattleInputs();
-
-                    Map<String, Object> result = (Map<String, Object>) roomData.get("result");
-                    if (result != null) {
-                        String myResult = (String) result.get(myUid);
-                        if (myResult != null) {
-                            showBattleResultDialog("win".equals(myResult));
-                        }
-                    }
-                    //return;
+                    showResult(roomData, 3000L); // 3초 지연
                 }
             }
 
@@ -201,43 +209,60 @@ public class BattleActivity extends AppCompatActivity {
             }
         };
         roomRef.addValueEventListener(roomListener);
-
     }
 
     private void processTurn(Map<String, String> actions) {
         String myAction = actions.get(myUid);
         String oppAction = actions.get(opponentUid);
 
-        // 결과 계산 예시 (간단한 공격-방어 판정)
-        int damageToOpponent = 0;
-        int damageToMe = 0;
+        // 준비: 누적 버퍼
+        int dmgToOppCounter = 0, dmgToMeCounter = 0;
+        int dmgToOppAction = 0,  dmgToMeAction  = 0;
+        int    myHpDelta = 0, oppHpDelta = 0; // 회복은 +, 피해는 음수로 처리해도 됨
 
-        if ("attack".equals(myAction)) {
-            if ("defense".equals(oppAction)) damageToOpponent = 0;  // 방어 성공
-            else damageToOpponent = myAttack;
-        } else if ("skill".equals(myAction)) {
-            if ("defense".equals(oppAction)) damageToOpponent = myDirt / 2; // 스킬은 반감
-            else damageToOpponent = myDirt;
-            mySkillLeft = Math.max(0, mySkillLeft - 1);
-        } else {
-            damageToOpponent = 0;
+        switch (myAction) {
+            case "attack": dmgToOppAction += myAttack; break;
+            case "skill":  dmgToOppAction += myDirt; break;
+            case "heal":   myHpDelta += myDirt/2; break;
+            case "counter":  break;
         }
 
-        // 상대 공격 처리 (mirror)
-        if ("attack".equals(oppAction)) {
-            if ("defense".equals(myAction)) damageToMe = 0;
-            else damageToMe = opponentAttack;
-        } else if ("skill".equals(oppAction)) {
-            if ("defense".equals(myAction)) damageToMe = opponentDirt / 2;
-            else damageToMe = opponentDirt;
-            opponentSkillLeft = Math.max(0, opponentSkillLeft - 1);
-        } else{
-            damageToMe = 0;
+        switch (oppAction) {
+            case "attack": dmgToMeAction += opponentAttack; break;
+            case "skill":  dmgToMeAction += opponentDirt;  break;
+            case "heal":   oppHpDelta += opponentDirt/2; break;
+            case "counter":  break;
         }
 
-        // DB 트랜잭션으로 HP 및 스킬횟수 업데이트, actions 제거하며 턴 넘김
-        int finalDamageToOpponent = damageToOpponent;
-        int finalDamageToMe = damageToMe;
+        //카운터 고려
+        if ("counter".equals(myAction) && ("attack".equals(oppAction) || "skill".equals(oppAction))) {
+            double r = Math.random();
+            if (r < 0.5) {
+                dmgToOppCounter += dmgToMeAction * 1.5;
+                dmgToMeAction = 0;
+            }
+            else {
+                dmgToMeCounter += dmgToMeAction * 1.3;
+                dmgToMeAction = 0;
+            }
+        }
+        if ("counter".equals(oppAction) && ("attack".equals(myAction) || "skill".equals(myAction))) {
+            double r = Math.random();
+            if (r < 0.5) { //상대 카운터 성공
+                dmgToMeCounter += dmgToOppAction * 1.5;
+                dmgToOppAction = 0;
+            }
+            else { //실패
+                dmgToOppCounter += dmgToOppAction * 1.3;
+                dmgToOppAction = 0;
+            }
+        }
+
+
+        int totalDmgToOpp = dmgToOppCounter + dmgToOppAction; // 상대가 받을 총 피해
+        int totalDmgToMe  = dmgToMeCounter  + dmgToMeAction;  // 내가 받을 총 피해
+        int totalHealMe   = myHpDelta;                        // 내가 받을 총 회복
+        int totalHealOpp  = oppHpDelta;                       // 상대가 받을 총 회복
         roomRef.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
@@ -251,21 +276,42 @@ public class BattleActivity extends AppCompatActivity {
                 Map<String, Object> opData = (Map<String, Object>) players.get(opponentUid);
                 if (myData == null || opData == null) return Transaction.abort();
 
+                //체력 계산
                 int opHp = getIntFromObject(opData.get("hp"));
                 int myHp = getIntFromObject(myData.get("hp"));
+                opHp = Math.max(0, opHp + totalHealOpp - totalDmgToOpp);
+                myHp = Math.max(0, myHp + totalHealMe - totalDmgToMe);
 
-                opHp = Math.max(0, opHp - finalDamageToOpponent);
-                myHp = Math.max(0, myHp - finalDamageToMe);
+                //스킬 포인트 계산
+                int mySkillPoint = getIntFromObject(myData.get("skillPoint")); //남은 스킬 포인트
+                int oppSkillPoint = getIntFromObject(opData.get("skillPoint"));
+                int mySkillCost  = costOf(actions.get(myUid)); //사용 스킬 포인트
+                int oppSkillCost = costOf(actions.get(opponentUid));
+
+                if (mySkillPoint < mySkillCost || oppSkillPoint < oppSkillCost) {
+                    return Transaction.abort(); // 오류 방지
+                }
+
+                mySkillPoint  -= mySkillCost;
+                oppSkillPoint -= oppSkillCost;
+
+                mySkillPoint  = Math.min(10, mySkillPoint + 1);
+                oppSkillPoint = Math.min(10, mySkillPoint + 1);
+
 
                 opData.put("hp", opHp);
                 myData.put("hp", myHp);
-                myData.put("skillLeft", mySkillLeft);
-                opData.put("skillLeft", opponentSkillLeft);
+                myData.put("skillPoint", mySkillPoint);
+                opData.put("skillPoint", oppSkillPoint);
+                myData.put("lastAction", actions.get(myUid));
+                opData.put("lastAction", actions.get(opponentUid));
 
                 players.put(myUid, myData);
                 players.put(opponentUid, opData);
 
                 rd.put("players", players);
+
+
 
                 // actions 초기화하여 다음 턴 준비
                 rd.put("actions", null);
@@ -274,8 +320,11 @@ public class BattleActivity extends AppCompatActivity {
                 if (opHp == 0 || myHp == 0) {
                     rd.put("state", "finished");
                     Map<String, Object> result = (Map<String, Object>) rd.get("result");
-                    if (result == null) result = new java.util.HashMap<>();
-                    if (opHp == 0) {
+                    if (result == null) result = new HashMap<>();
+                    if (opHp == 0 && myHp == 0) {
+                        result.put(myUid, "draw");
+                        result.put(opponentUid, "draw");
+                    } else if (opHp == 0) {
                         result.put(myUid, "win");
                         result.put(opponentUid, "lose");
                     } else {
@@ -305,28 +354,31 @@ public class BattleActivity extends AppCompatActivity {
         int hp = getIntFromObject(data.get("hp"));
         int attack = getIntFromObject(data.get("attack"));
         int dirt = getIntFromObject(data.get("dirt"));
-        int skillLeft = getIntFromObject(data.getOrDefault("skillLeft", 3));
+        int skillPoint = getIntFromObject(data.getOrDefault("skillPoint", 10));
 
         String nickname = (String) data.get("nickname");
         String characterName = (String) data.get("characterName");
+        String action = (String) data.get("lastAction");
 
         if (isMyself) {
-            myHp = hp; myAttack = attack; myDirt = dirt; mySkillLeft = skillLeft;
+            myHp = hp; myAttack = attack; myDirt = dirt; mySkillPoint = skillPoint;
             if (nickname != null) tvMyNickname.setText(nickname);
             if (characterName != null) tvMyCharacterName.setText(characterName);
             tvMyHp.setText("HP: " + hp);
             tvMyAttack.setText("공격력: " + attack);
             tvMyDirt.setText("Dirt: " + dirt);
-            tvMySkill.setText("스킬 횟수: " + skillLeft + "/3");
+            tvMySkill.setText("스킬 횟수: " + skillPoint + "/10");
+            if(action != null) tvMyAction.setText("내 행동: " + mapActionLabel(action));
 
         } else {
-            opponentHp = hp; opponentAttack = attack; opponentDirt = dirt; opponentSkillLeft = skillLeft;
+            opponentHp = hp; opponentAttack = attack; opponentDirt = dirt; opponentSkillPoint = skillPoint;
             if (nickname != null) tvOpponentNickname.setText(nickname);
             if (characterName != null) tvOpponentCharacterName.setText(characterName);
             tvOpponentHp.setText("HP: " + hp);
             tvOpponentAttack.setText("공격력: " + attack);
             tvOpponentDirt.setText("Dirt: " + dirt);
-            tvOpponentSkill.setText("상대 스킬: " + skillLeft + "/3");
+            tvOpponentSkill.setText("상대 스킬: " + skillPoint + "/10");
+            if(action != null) tvOpponentAction.setText("상대 행동: " + mapActionLabel(action));
         }
     }
 
@@ -354,9 +406,40 @@ public class BattleActivity extends AppCompatActivity {
         tvTurn.setText("상대 입력 대기 중...");
     }
 
+    private String mapActionLabel(String a){
+        if (a == null) return "시작";
+        switch (a){
+            case "attack": return "기본 공격";
+            case "skill":  return "스킬";
+            case "heal":   return "회복";
+            case "counter":return "반격";
+            default:       return a;
+        }
+    }
+
+    private int costOf(String action) {
+        if (action == null) return 0;
+        switch (action) {
+            case "skill":   return 3;
+            case "heal":    return 2;
+            case "counter": return 1;
+            case "attack":  return 0;
+            default:        return 0;
+        }
+    }
+
     private void updateButtonsClickable() { //버튼 활성화
         btnAttack.setEnabled(true);
-        btnSkill.setEnabled(mySkillLeft > 0);
+        btnSkill.setEnabled(mySkillPoint > 3);
+        btnHeal.setEnabled(mySkillPoint > 2);
+        btnCounter.setEnabled(mySkillPoint >1);
+    }
+
+    private void disableBattleInputs() { //버튼 비활성화
+        btnAttack.setEnabled(false);
+        btnSkill.setEnabled(false);
+        btnHeal.setEnabled(false);
+        btnCounter.setEnabled(false);
     }
 
 
@@ -377,18 +460,32 @@ public class BattleActivity extends AppCompatActivity {
 
     Boolean isBattleEnded = false;
 
-    private void disableBattleInputs() { //버튼 비활성화
-        btnAttack.setEnabled(false);
-        btnSkill.setEnabled(false);
+
+    private void showResult(Map<String,Object> roomData, long delayMs) {
+        Object resObj = roomData.get("result");
+        String myResult = (resObj instanceof Map && ((Map<?,?>) resObj).get(myUid) instanceof String)
+                ? (String) ((Map<?,?>) resObj).get(myUid)
+                : "draw";
+
+        tvTurn.setText("전투 종료... 결과 계산 중");
+        tvTurn.postDelayed(() -> showBattleResultDialog(myResult), 2000L);
     }
 
-    private void showBattleResultDialog(boolean isWin) { //결과 화면 출력
-        String message = isWin ? "승리하셨습니다!" : "패배하셨습니다!";
+    private void showBattleResultDialog(String myResult) {
+        String title = "전투 종료";
+        String message;
+        switch (myResult) {
+            case "win":  message = "승리하셨습니다!"; break;
+            case "lose": message = "패배하셨습니다!"; break;
+            case "draw": message = "무승부입니다!";   break;
+            default:     message = "전투가 종료되었습니다."; break;
+        }
 
-        updateScore(isWin);
+        // 점수 반영
+        updateScore(myResult);
 
         new AlertDialog.Builder(this)
-                .setTitle("전투 종료")
+                .setTitle(title)
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("확인", (dialog, which) -> {
@@ -398,14 +495,16 @@ public class BattleActivity extends AppCompatActivity {
                     finish();
                 })
                 .show();
-
-
     }
 
-    private void updateScore(boolean win) { //RankingPoint
+    private void updateScore(String myResult) {
+        int pointChange;
+        if ("win".equals(myResult))      pointChange = 15;   // 기존과 동일
+        else if ("lose".equals(myResult))pointChange = -10;  // 기존과 동일
+        else                             pointChange = 0;    // draw 정책
+
         DatabaseReference rankingPointRef = FirebaseDatabase.getInstance()
                 .getReference("users").child(myUid).child("rankingPoint");
-        int pointChange = win ? 15 : -10;
 
         rankingPointRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -420,7 +519,8 @@ public class BattleActivity extends AppCompatActivity {
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot snapshot) {
                 if (committed && snapshot != null && snapshot.exists()) {
-                    int updatedPoint = snapshot.getValue(Integer.class);
+                    Integer updated = snapshot.getValue(Integer.class);
+                    int updatedPoint = updated == null ? 0 : updated;
                     FirebaseDatabase.getInstance().getReference("rankings")
                             .child(myUid)
                             .setValue(updatedPoint);
@@ -443,7 +543,7 @@ public class BattleActivity extends AppCompatActivity {
                 if ("finished".equals(roomData.get("state"))) return Transaction.abort();
 
                 Map<String, Object> result = (Map<String, Object>) roomData.get("result");
-                if (result == null) result = new java.util.HashMap<>();
+                if (result == null) result = new HashMap<>();
 
                 result.put(myUid, "lose");
                 result.put(opponentUid, "win");

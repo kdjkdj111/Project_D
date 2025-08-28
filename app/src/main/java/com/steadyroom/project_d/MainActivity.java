@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
         myCharacterData = new HashMap<>();
         myCharacterData.put("characterName", "단데기");
         myCharacterData.put("hp", 40);
-        myCharacterData.put("attack", 15);
-        myCharacterData.put("dirt", 2);
-        //myCharacterData.put("skillLeft",4);
+        myCharacterData.put("attack", 2);
+        myCharacterData.put("dirt", 15);
+        myCharacterData.put("skillLeft",10);
 
         btnBattle = findViewById(R.id.btn_battle);
         btnBattle.setText("배틀 시작");
@@ -322,7 +322,6 @@ public class MainActivity extends AppCompatActivity {
 
                                         Map<String, Object> players = (Map<String, Object>) roomData.get("players");
                                         if (players == null) players = new HashMap<>();
-                                        myCharacterData.put("skillLeft",3);
                                         players.put(myUid, myCharacterData);
                                         roomData.put("players", players);
                                         roomData.put("state", "playing");
@@ -379,7 +378,6 @@ public class MainActivity extends AppCompatActivity {
         Map<String, Object> roomData = new HashMap<>();
         roomData.put("state", "waiting");
         Map<String, Object> players = new HashMap<>();
-        myCharacterData.put("skillLeft",4);
         players.put(myUid, myCharacterData);
         roomData.put("players", players);
         roomsRef.child(newRoomId).setValue(roomData)
