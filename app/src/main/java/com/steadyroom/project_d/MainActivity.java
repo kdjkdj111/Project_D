@@ -85,10 +85,10 @@ public class MainActivity extends AppCompatActivity {
         //임시 메인 캐릭터
         myCharacterData = new HashMap<>();
         myCharacterData.put("characterName", "단데기");
-        myCharacterData.put("hp", 40);
+        myCharacterData.put("hp", 80);
         myCharacterData.put("attack", 2);
         myCharacterData.put("dirt", 15);
-        myCharacterData.put("skillLeft",10);
+        myCharacterData.put("skillPoint",10);
 
         btnBattle = findViewById(R.id.btn_battle);
         btnBattle.setText("배틀 시작");

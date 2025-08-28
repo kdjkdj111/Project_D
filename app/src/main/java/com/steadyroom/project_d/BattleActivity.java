@@ -108,8 +108,8 @@ public class BattleActivity extends AppCompatActivity {
         tvMyCharacterName.setText("");
         tvOpponentCharacterName.setText("");
 
-        tvMySkill.setText("스킬 횟수: 3/3");
-        tvOpponentSkill.setText("상대 스킬: 3/3");
+        tvMySkill.setText("스킬 횟수: 10/10");
+        tvOpponentSkill.setText("상대 스킬: 10/10");
 
         btnAttack.setEnabled(false);
         btnSkill.setEnabled(false);
@@ -125,22 +125,26 @@ public class BattleActivity extends AppCompatActivity {
         });
 
         btnSkill.setOnClickListener(v -> {
-            if (mySkillPoint <= 0) {
-                Toast.makeText(this, "스킬 횟수 모두 사용했습니다.", Toast.LENGTH_SHORT).show();
+            if (mySkillPoint < 3) {
+                Toast.makeText(this, "스킬 포인트가 부족합니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
             selectAction("skill");
         });
 
         btnHeal.setOnClickListener(v -> {
-            if (mySkillPoint <= 0) {
-                Toast.makeText(this, "스킬 횟수 모두 사용했습니다.", Toast.LENGTH_SHORT).show();
+            if (mySkillPoint < 2) {
+                Toast.makeText(this, "스킬 포인트가 부족합니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
             selectAction("heal");
         });
 
         btnCounter.setOnClickListener(v -> {
+            if (mySkillPoint < 1) {
+                Toast.makeText(this, "스킬 포인트가 부족합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             selectAction("counter");
         });
     }
@@ -218,7 +222,7 @@ public class BattleActivity extends AppCompatActivity {
         // 준비: 누적 버퍼
         int dmgToOppCounter = 0, dmgToMeCounter = 0;
         int dmgToOppAction = 0,  dmgToMeAction  = 0;
-        int    myHpDelta = 0, oppHpDelta = 0; // 회복은 +, 피해는 음수로 처리해도 됨
+        int myHpDelta = 0, oppHpDelta = 0; // 회복은 +, 피해는 음수로 처리해도 됨
 
         switch (myAction) {
             case "attack": dmgToOppAction += myAttack; break;
@@ -296,7 +300,7 @@ public class BattleActivity extends AppCompatActivity {
                 oppSkillPoint -= oppSkillCost;
 
                 mySkillPoint  = Math.min(10, mySkillPoint + 1);
-                oppSkillPoint = Math.min(10, mySkillPoint + 1);
+                oppSkillPoint = Math.min(10, oppSkillPoint + 1);
 
 
                 opData.put("hp", opHp);
@@ -367,7 +371,7 @@ public class BattleActivity extends AppCompatActivity {
             tvMyHp.setText("HP: " + hp);
             tvMyAttack.setText("공격력: " + attack);
             tvMyDirt.setText("Dirt: " + dirt);
-            tvMySkill.setText("스킬 횟수: " + skillPoint + "/10");
+            tvMySkill.setText("스킬 포인트: " + skillPoint + "/10");
             if(action != null) tvMyAction.setText("내 행동: " + mapActionLabel(action));
 
         } else {
@@ -377,7 +381,7 @@ public class BattleActivity extends AppCompatActivity {
             tvOpponentHp.setText("HP: " + hp);
             tvOpponentAttack.setText("공격력: " + attack);
             tvOpponentDirt.setText("Dirt: " + dirt);
-            tvOpponentSkill.setText("상대 스킬: " + skillPoint + "/10");
+            tvOpponentSkill.setText("스킬 포인트: " + skillPoint + "/10");
             if(action != null) tvOpponentAction.setText("상대 행동: " + mapActionLabel(action));
         }
     }
@@ -430,9 +434,9 @@ public class BattleActivity extends AppCompatActivity {
 
     private void updateButtonsClickable() { //버튼 활성화
         btnAttack.setEnabled(true);
-        btnSkill.setEnabled(mySkillPoint > 3);
-        btnHeal.setEnabled(mySkillPoint > 2);
-        btnCounter.setEnabled(mySkillPoint >1);
+        btnSkill.setEnabled(mySkillPoint >= 3);
+        btnHeal.setEnabled(mySkillPoint >= 2);
+        btnCounter.setEnabled(mySkillPoint >= 1);
     }
 
     private void disableBattleInputs() { //버튼 비활성화
