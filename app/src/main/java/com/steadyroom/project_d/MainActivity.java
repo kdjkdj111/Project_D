@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             if (!isMatching) {
                 // 매칭 시작
                 isMatching = true;
-                btnBattle.setText("매칭 취소");
+                btnBattle.setText("매칭중...");
                 startMatching(() -> {
                     btnBattle.setEnabled(true);}, () -> {
                     // 시작 실패 시 상태 복원
