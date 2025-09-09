@@ -5,14 +5,15 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="3dp"
     app:cardCornerRadius="20dp"
     app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="@drawable/view_card">
+        android:layout_height="600dp"
+        android:background="@drawable/view_card"
+        android:padding="16dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_top"
@@ -25,12 +26,12 @@
             android:id="@+id/tv_Acquire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
             android:text="획득여부"
             android:textColor="#FFFFFF"
-            android:layout_marginBottom="7dp"
             app:layout_constraintBottom_toTopOf="@id/tv_Name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tv_Name"
@@ -40,76 +41,76 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="35sp"
-            app:layout_constraintTop_toTopOf="@id/guideline_top"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/guideline_top" />
 
         <TextView
             android:id="@+id/tv_chance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="출현 확률"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_Name"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_Name" />
 
         <TextView
             android:id="@+id/tv_Power"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="전투력"
-            android:textColor="#FFFFFF"
-            android:textAlignment="center"
-            android:textSize="25sp"
             android:layout_marginTop="12dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_chance"
+            android:text="전투력"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_chance" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:scaleType="centerCrop"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_Power"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_Power" />
 
         <TextView
             android:id="@+id/tv_Attack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Atk"
             android:textColor="#FFFFFF"
-            app:layout_constraintTop_toBottomOf="@id/imageView"
-            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/imageView" />
 
         <TextView
             android:id="@+id/tv_HP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="HP"
             android:textColor="#FFFFFF"
-            app:layout_constraintTop_toBottomOf="@id/tv_Attack"
-            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_Attack" />
 
         <TextView
             android:id="@+id/tv_Dirt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Dirt"
             android:textColor="#FFFFFF"
-            app:layout_constraintTop_toBottomOf="@id/tv_HP"
-            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_HP" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -117,22 +118,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.90" />
+            app:layout_constraintGuide_begin="500dp" />
 
         <Button
             android:id="@+id/btn_get"
             style="@style/customButtonFontStyle"
-            android:layout_width="127dp"
-            android:layout_height="64dp"
-            android:background="@drawable/button_get"
-            android:layout_marginBottom="28dp"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_basic"
+            android:paddingTop="3dp"
+            android:text="GET"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:backgroundTint="@null"
-            app:layout_constraintTop_toTopOf="@id/guideline_bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-
-
+            app:layout_constraintTop_toTopOf="@id/guideline_bottom" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

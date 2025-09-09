@@ -30,10 +30,13 @@
 
     <Button
         android:id="@+id/btn_gotoMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="70dp"
-        android:text="Button"
+        android:background="@drawable/button_basic"
+        app:backgroundTint="@null"
+        android:text="홈으로"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

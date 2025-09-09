@@ -31,8 +31,17 @@ public class BagActivity extends AppCompatActivity {
 
         loadInventory();
 
-        ImageButton btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(view -> finish());
+        setupBackButton();
+
+    }
+
+    private void setupBackButton() {
+        ImageView btn_back = findViewById(R.id.btn_back);
+        if (btn_back != null) {
+            btn_back.setOnClickListener(v -> {
+                finish();
+            });
+        }
     }
 
     private void loadInventory() {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,7 +85,6 @@ public class ShopActivity extends AppCompatActivity {
 
     // 버튼들
     private Button btnItemPackage, btnRateUp, btnAutoCatch, btnRemoveAds, btnItemDoubleMonster, btnSweetSmell;
-    private ImageButton btnBack;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -103,7 +103,6 @@ public class ShopActivity extends AppCompatActivity {
         btnRemoveAds = findViewById(R.id.btnBuy_removeAds);
         btnItemDoubleMonster = findViewById(R.id.btnBuy_doubleMonster);
         btnSweetSmell = findViewById(R.id.btnBuy_sweetSmell);
-        btnBack = findViewById(R.id.btnBack);
 
         // 버튼 클릭 리스너 등록
         btnItemPackage.setOnClickListener(v -> shop_popup.show(this, new ItemPackage()));
@@ -113,10 +112,19 @@ public class ShopActivity extends AppCompatActivity {
         btnItemDoubleMonster.setOnClickListener(v -> shop_popup.show(this, new Generate_X2()));
         btnSweetSmell.setOnClickListener(v -> shop_popup.show(this, new SweetSmell()));
 
-        btnBack.setOnClickListener(view -> finish());
+        setupBackButton();
 
         // 포인트 불러오기
         loadUserPoints();
+    }
+
+    private void setupBackButton() {
+        ImageView btn_back = findViewById(R.id.btn_back);
+        if (btn_back != null) {
+            btn_back.setOnClickListener(v -> {
+                finish();
+            });
+        }
     }
 
     private void loadUserPoints() {

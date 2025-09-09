@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
 
@@ -32,18 +33,21 @@
     <Button
         android:id="@+id/btn_buy"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_basic"
         android:text="구매하기"
-        android:backgroundTint="#B59B76"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="8dp" />
+        app:backgroundTint="@null" />
 
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_basic"
+        app:backgroundTint="@null"
         android:text="취소"
-        android:backgroundTint="#D9CFC2"
-        android:textColor="#4B3F2F" />
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>
