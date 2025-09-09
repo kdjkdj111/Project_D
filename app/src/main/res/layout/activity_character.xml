@@ -6,7 +6,7 @@
     android:id="@+id/inventoryRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A0A0A0" >
+    android:background="@drawable/basic_background" >
 
     <ImageView
         android:id="@+id/backButton"
@@ -16,19 +16,21 @@
         android:layout_marginTop="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/baseline_arrow_back_24"
+        android:src="@drawable/btn_x"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/collectButton"
+        style="@style/customButtonFontStyle"
         android:layout_width="80dp"
         android:layout_height="48dp"
         android:layout_marginStart="68dp"
-        android:backgroundTint="#E0E0E0"
+        android:background="@drawable/button_basic"
         android:text="@string/encyclopedia_button_text"
-        android:textColor="#333333"
+        android:textColor="#FFFFFF"
         android:textSize="14sp"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="@+id/backButton"
         app:layout_constraintStart_toStartOf="@+id/backButton"
         app:layout_constraintTop_toTopOf="@+id/backButton"
@@ -36,27 +38,29 @@
 
     <Button
         android:id="@+id/sellButton"
+        style="@style/customButtonFontStyle"
         android:layout_width="80dp"
         android:layout_height="50dp"
-        android:layout_marginStart="130dp"
-        android:text="판매"
-        tools:layout_editor_absoluteX="204dp"
-        tools:layout_editor_absoluteY="18dp"
+        android:layout_marginStart="144dp"
+        android:background="@drawable/button_basic"
+        android:text="선택"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="@+id/collectButton"
         app:layout_constraintStart_toStartOf="@+id/collectButton"
-        app:layout_constraintTop_toTopOf="@+id/collectButton"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toTopOf="@+id/collectButton" />
 
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="80dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
+        android:background="@drawable/button_basic"
         android:text="취소"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/sellButton"
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="@id/sellButton"
-        app:layout_constraintStart_toEndOf="@id/sellButton" />
+        app:layout_constraintStart_toEndOf="@id/sellButton"
+        app:layout_constraintTop_toTopOf="@id/sellButton" />
 
     <TextView
         android:id="@+id/progressTextView"
@@ -64,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text=""
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/backButton"
         app:layout_constraintStart_toEndOf="@+id/collectButton"

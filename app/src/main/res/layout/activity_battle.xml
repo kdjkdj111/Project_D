@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/battle__background"
     tools:context=".BattleActivity">
 
     <!-- 내 캐릭터 -->
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="내 이름"
+        android:textColor="#FFFFFF"
         android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/iv_my_character"
         app:layout_constraintStart_toStartOf="@id/iv_my_character"
@@ -40,6 +42,7 @@
         android:text="내 캐릭터"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
         android:layout_marginEnd="65dp"
         app:layout_constraintBottom_toTopOf="@id/tv_my_attack"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,6 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="65dp"
         android:text="Attack"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/tv_my_character_name"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -63,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="65dp"
         android:text="HP"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/tv_my_attack"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -73,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="65dp"
         android:text="Dirt"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/tv_my_hp"
         app:layout_constraintBottom_toBottomOf="@id/iv_my_character"
@@ -113,6 +119,7 @@
         android:layout_marginBottom="15dp"
         android:text="상대 이름"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@id/iv_opponent_character"
         app:layout_constraintStart_toStartOf="@id/iv_opponent_character"
         app:layout_constraintEnd_toEndOf="@id/iv_opponent_character" />
@@ -126,6 +133,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginStart="65dp"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@id/tv_opponent_attack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_opponent_character"
@@ -138,6 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="65dp"
         android:text="Attack"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/tv_opponent_character_name"
         app:layout_constraintStart_toStartOf="parent" />
@@ -149,6 +158,7 @@
         android:layout_marginStart="65dp"
         android:text="HP"
         android:textSize="16sp"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/tv_opponent_attack"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -158,6 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="65dp"
         android:text="Dirt"
+        android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/tv_opponent_hp"
         app:layout_constraintBottom_toBottomOf="@id/iv_opponent_character"
@@ -182,17 +193,17 @@
         android:id="@+id/tv_turn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="현재 턴"
+        android:padding="8dp"
+        android:text="현재 상태"
+        android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#FF000000"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/iv_opponent_character"
         app:layout_constraintBottom_toTopOf="@id/iv_my_character"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_opponent_character"
+        app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/tv_opponent_action"
@@ -239,6 +250,9 @@
 
             <Button
                 android:id="@+id/btn_attack"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
@@ -248,6 +262,9 @@
 
             <Button
                 android:id="@+id/btn_skill"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
@@ -264,6 +281,9 @@
 
             <Button
                 android:id="@+id/btn_heal"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
@@ -273,6 +293,9 @@
 
             <Button
                 android:id="@+id/btn_counter"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"

@@ -2,7 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="24dp"
+    android:background="@drawable/basic_background">
 
     <LinearLayout
         android:id="@+id/layoutShopItems"
@@ -12,15 +14,16 @@
         android:gravity="center_horizontal">
 
         <!-- 뒤로가기 버튼 -->
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="start"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_revert"
-            android:contentDescription="뒤로가기" />
 
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="start"
+            android:clickable="true"
+            android:contentDescription="@string/common_signin_button_text"
+            android:focusable="true"
+            android:src="@drawable/btn_x" />
         <!-- 포인트 표시 -->
         <TextView
             android:id="@+id/user_points"
@@ -29,6 +32,7 @@
             android:text="포인트: 0"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="#FFFFFF"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp" />
@@ -56,11 +60,16 @@
 
             <Button
                 android:id="@+id/btnBuy_package"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="구매"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_basic"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="구매"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
         <!-- 확률 업 -->
@@ -84,9 +93,13 @@
 
             <Button
                 android:id="@+id/btnBuy_rateUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="구매" />
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
         <!-- 자동 포획 -->
@@ -110,9 +123,13 @@
 
             <Button
                 android:id="@+id/btnBuy_autoCatch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="구매" />
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
         <!-- 광고 제거 -->
@@ -136,9 +153,13 @@
 
             <Button
                 android:id="@+id/btnBuy_removeAds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="구매" />
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
         <!-- 먼지 2배 생성 -->
@@ -162,9 +183,13 @@
 
             <Button
                 android:id="@+id/btnBuy_doubleMonster"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="구매" />
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
         <!-- 달콤한 향기 -->
@@ -188,9 +213,13 @@
 
             <Button
                 android:id="@+id/btnBuy_sweetSmell"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="구매" />
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
         </LinearLayout>
 
     </LinearLayout>

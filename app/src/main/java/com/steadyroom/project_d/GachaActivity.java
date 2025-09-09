@@ -45,7 +45,7 @@ public class GachaActivity extends AppCompatActivity {
             return insets;
         });
 
-        textPoint = findViewById(R.id.text_point);
+        textPoint = findViewById(R.id.tv_point);
         updatePointText();
         setupBackButton();
 
@@ -104,9 +104,9 @@ public class GachaActivity extends AppCompatActivity {
         });
     }
     private void setupBackButton() {
-        ImageView backButton = findViewById(R.id.backButton);
-        if (backButton != null) {
-            backButton.setOnClickListener(v -> {
+        ImageView btn_back = findViewById(R.id.btn_back);
+        if (btn_back != null) {
+            btn_back.setOnClickListener(v -> {
                 finish();
             });
         }

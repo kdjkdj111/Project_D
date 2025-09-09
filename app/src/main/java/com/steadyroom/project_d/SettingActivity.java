@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,7 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingActivity extends AppCompatActivity {
-    private Button btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,14 +28,8 @@ public class SettingActivity extends AppCompatActivity {
             return insets;
         });
 
-        btnBack = findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        setupBackButton();
+
 
         Button btnResetPermission = findViewById(R.id.btn_reset_permission);
         btnResetPermission.setOnClickListener(new View.OnClickListener() {
@@ -80,5 +74,14 @@ public class SettingActivity extends AppCompatActivity {
 
         // 앱 나갈 때 마지막 시간 저장
         PointManager.getInstance().saveLastQuitTime(this);
+    }
+
+    private void setupBackButton() {
+        ImageView btn_back = findViewById(R.id.btn_back);
+        if (btn_back != null) {
+            btn_back.setOnClickListener(v -> {
+                finish();
+            });
+        }
     }
 }

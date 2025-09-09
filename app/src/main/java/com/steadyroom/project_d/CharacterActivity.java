@@ -128,7 +128,7 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
                     // 판매 모드 진입
                     isSellingMode = true;
                     selectedForSale.clear(); // 판매 리스트 초기화
-                    sellButton.setText("판매 확인"); // "판매"버튼을 "판매 확인"으로 텍스트 변경
+                    sellButton.setText("판매"); // "판매"버튼을 "판매 확인"으로 텍스트 변경
                     characterAdapter.setSellingMode(true); // 어댑터에 판매 모드 알림
                     cancelButton.setVisibility(View.VISIBLE);
                 } else {
@@ -143,7 +143,7 @@ public class CharacterActivity extends AppCompatActivity implements MyCharacterM
                 // 판매 모드 해제
                 isSellingMode = false;
                 selectedForSale.clear();
-                sellButton.setText("판매"); //  버튼 텍스트 되돌리기
+                sellButton.setText("선택"); //  버튼 텍스트 되돌리기
                 characterAdapter.setSellingMode(false);
                 cancelButton.setVisibility(View.GONE); // 취소 버튼 숨기기
             });
