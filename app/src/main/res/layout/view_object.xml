@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,128 +14,141 @@
         android:background="@drawable/view_card"
         android:padding="16dp">
 
+        <!-- 상단 가이드라인 -->
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.16" />
+            app:layout_constraintGuide_begin="51dp" />
+
+        <!-- 하단 가이드라인 -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="60dp" />
+
+        <!-- 상단 좌측 '획득여부' -->
+
+        <!-- 상단 우측 '출현 확률' -->
 
         <TextView
             android:id="@+id/tv_Acquire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="7dp"
             android:text="획득여부"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toTopOf="@id/tv_Name"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_Name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="35sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline_top" />
+
+        <!-- 상단 중앙 좌측 'Name' -->
+
+        <!-- 상단 중앙 우측 '전투력' -->
+
+        <!-- 캐릭터 이미지 중앙 -->
 
         <TextView
             android:id="@+id/tv_chance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="6dp"
             android:text="출현 확률"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_Acquire"
+            app:layout_constraintTop_toTopOf="@id/guideline_top" />
+
+        <TextView
+            android:id="@+id/tv_Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginTop="35dp"
+            android:text="Name"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_Name" />
+            app:layout_constraintTop_toBottomOf="@id/guideline_top" />
 
         <TextView
             android:id="@+id/tv_Power"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginEnd="70dp"
             android:text="전투력"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_chance" />
+            app:layout_constraintTop_toBottomOf="@id/guideline_top" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="30dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_Power" />
+            app:layout_constraintTop_toBottomOf="@id/tv_Name" />
 
+        <!-- 하단 중앙 'Atk' 텍스트 -->
         <TextView
             android:id="@+id/tv_Attack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="35dp"
             android:text="Atk"
             android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imageView" />
 
+        <!-- 하단 중앙 'HP' 텍스트 -->
         <TextView
             android:id="@+id/tv_HP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="HP"
             android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_Attack" />
 
+        <!-- 하단 중앙 'Dirt' 텍스트 -->
         <TextView
             android:id="@+id/tv_Dirt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="20dp"
             android:text="Dirt"
             android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_HP" />
 
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="500dp" />
-
+        <!-- 하단 중앙 GET 버튼 -->
         <Button
             android:id="@+id/btn_get"
             style="@style/customButtonFontStyle"
             android:layout_width="125dp"
             android:layout_height="50dp"
-            android:layout_marginTop="8dp"
             android:background="@drawable/button_basic"
-            android:paddingTop="3dp"
             android:text="GET"
             android:textSize="20sp"
             android:textStyle="bold"
             app:backgroundTint="@null"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toTopOf="@id/guideline_bottom"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline_bottom" />
-
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
