@@ -1,39 +1,42 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
-    android:layout_height="120dp">
+    android:layout_height="120dp"
+    android:background="@drawable/button_basic">
 
     <TextView
         android:id="@+id/tvRank"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
         android:text="rank"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.4"
-        android:layout_marginStart="24dp"/>
+        app:layout_constraintVertical_bias="0.45" />
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:text="name"
-        app:layout_constraintStart_toEndOf="@id/tvRank"
-        app:layout_constraintTop_toTopOf="@id/tvRank"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@id/tvRank"
-        android:layout_marginStart="32dp"/>
+        app:layout_constraintStart_toEndOf="@id/tvRank"
+        app:layout_constraintTop_toTopOf="@id/tvRank" />
 
     <TextView
         android:id="@+id/tvRankPoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:text="rankPoint"
-        app:layout_constraintStart_toEndOf="@id/tvName"
-        app:layout_constraintTop_toTopOf="@id/tvRank"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@id/tvRank"
-        android:layout_marginStart="32dp"/>
+        app:layout_constraintStart_toEndOf="@id/tvName"
+        app:layout_constraintTop_toTopOf="@id/tvRank" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

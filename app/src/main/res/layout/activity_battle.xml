@@ -294,14 +294,14 @@
             <Button
                 android:id="@+id/btn_counter"
                 style="@style/customButtonFontStyle"
-                android:background="@drawable/button_basic"
-                app:backgroundTint="@null"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:text="반격(1)"
-                android:textSize="16sp" />
+                android:background="@drawable/button_basic"
+                android:text="반격(2)"
+                android:textSize="16sp"
+                app:backgroundTint="@null" />
         </TableRow>
     </TableLayout>
 

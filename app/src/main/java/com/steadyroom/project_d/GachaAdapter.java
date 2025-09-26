@@ -3,6 +3,7 @@ package com.steadyroom.project_d;
 import static com.steadyroom.project_d.CharacterList.BASE_POOL;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         holder.tvAttack.setText("Atk: " + characterInstance.getAttack());
         holder.tvHP.setText("HP: " + characterInstance.getHp());
         holder.tvDirt.setText("Dirt: " + characterInstance.getDirt());
-        holder.tvPower.setText("전투력: " + characterInstance.getPower());
+        holder.tvPower.setText("⚔️" + characterInstance.getPower());
 
         //holder.imageView.setImageResource(characterInstance.getImageId());
         int imageResId = holder.itemView.getContext().getResources().getIdentifier(
@@ -61,15 +62,16 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         CharacterTemplate template = findTemplateByName(characterInstance.getName());
         if (template != null) {
             double chance = template.getAppearChance();
-            holder.tvChance.setText(String.format("출현 확률: %.2f%%", chance * 100));
+            holder.tvChance.setText(String.format("%.2f%%", chance * 100));
         } else {
-            holder.tvChance.setText("출현 확률: ?");
+            holder.tvChance.setText("?");
         }
 
         boolean isAcquired = false;
         for (CharacterInstance owned : currentUser.characters) {
             if (owned.getName().equals(characterInstance.getName())) {
                 holder.tvAcquire.setText("보유중");
+                holder.tvAcquire.setTextColor(Color.GREEN);
                 isAcquired = true;
                 break;
             }
@@ -77,6 +79,7 @@ public class GachaAdapter extends RecyclerView.Adapter<GachaAdapter.GachaViewHol
         if (!isAcquired) {
             // 미획득 캐릭터인 경우
             holder.tvAcquire.setText("미보유");
+            holder.tvAcquire.setTextColor(Color.RED);
         }
 
         holder.btnGet.setEnabled(true);
