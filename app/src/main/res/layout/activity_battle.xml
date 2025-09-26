@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/battle__background"
+    tools:context=".BattleActivity">
+
+    <!-- 내 캐릭터 -->
+
+    <!-- 내 캐릭터 이미지 (좌측 하단) -->
+    <ImageView
+        android:id="@+id/iv_my_character"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="224dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <!-- 내 닉네임: 이미지 아래 중앙 정렬 -->
+    <TextView
+        android:id="@+id/tv_my_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="내 이름"
+        android:textColor="#FFFFFF"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/iv_my_character"
+        app:layout_constraintStart_toStartOf="@id/iv_my_character"
+        app:layout_constraintEnd_toEndOf="@id/iv_my_character" />
+
+    <!-- 내 캐릭터 이름: 이미지와 같은 수직 중심에 위치, 능력치 위 -->
+    <TextView
+        android:id="@+id/tv_my_character_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="내 캐릭터"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginEnd="65dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_my_attack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_my_character"
+        android:textAlignment="viewEnd" />
+
+    <!-- 공격력: 캐릭터 이름 바로 아래 세로 정렬 -->
+    <TextView
+        android:id="@+id/tv_my_attack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="65dp"
+        android:text="Attack"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_my_character_name"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_my_hp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="65dp"
+        android:text="HP"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_my_attack"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_my_dirt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="65dp"
+        android:text="Dirt"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_my_hp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_my_character"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- 상대 캐릭터 -->
+
+    <!-- 상대 캐릭터 이미지 (우측 상단) -->
+    <TextView
+        android:id="@+id/tv_my_skill_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="64dp"
+        android:text="내 스킬"
+        android:textColor="#6A1B9A"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_my_character"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_my_dirt"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/iv_opponent_character"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <!-- 상대 닉네임: 이미지 바로 위 중앙 정렬 -->
+    <TextView
+        android:id="@+id/tv_opponent_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="상대 이름"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@id/iv_opponent_character"
+        app:layout_constraintStart_toStartOf="@id/iv_opponent_character"
+        app:layout_constraintEnd_toEndOf="@id/iv_opponent_character" />
+
+    <!-- 상대 캐릭터 이름: 이미지와 같은 수직 중앙에 위치, 능력치 위 -->
+    <TextView
+        android:id="@+id/tv_opponent_character_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="상대 캐릭터"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginStart="65dp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@id/tv_opponent_attack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_opponent_character"
+        android:textAlignment="viewStart" />
+
+    <!-- 공격력: 캐릭터 이름 바로 아래 세로 정렬 -->
+    <TextView
+        android:id="@+id/tv_opponent_attack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="65dp"
+        android:text="Attack"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_opponent_character_name"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_opponent_hp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="65dp"
+        android:text="HP"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@id/tv_opponent_attack"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_opponent_dirt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="65dp"
+        android:text="Dirt"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_opponent_hp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_opponent_character"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <!-- 현재 턴 정보 (중앙에 배치) -->
+    <TextView
+        android:id="@+id/tv_opponent_skill_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:text="상대 스킬"
+        android:textColor="#00796B"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_opponent_character"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_opponent_dirt"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_turn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="현재 상태"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/iv_my_character"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_opponent_character"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <TextView
+        android:id="@+id/tv_opponent_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:padding="4dp"
+        android:text="상대 행동"
+        android:textColor="#FF4081"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_turn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_my_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:padding="4dp"
+        android:text="내 행동"
+        android:textColor="#3F51B5"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_turn" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:stretchColumns="0,1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_attack"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="기본 공격(+)"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_skill"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="스킬(3)"
+                android:textSize="16sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_heal"
+                style="@style/customButtonFontStyle"
+                android:background="@drawable/button_basic"
+                app:backgroundTint="@null"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:text="회복(2)"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_counter"
+                style="@style/customButtonFontStyle"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_basic"
+                android:text="반격(2)"
+                android:textSize="16sp"
+                app:backgroundTint="@null" />
+        </TableRow>
+    </TableLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

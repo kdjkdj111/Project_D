@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="24dp"
+    android:background="@drawable/basic_background">
+
+    <LinearLayout
+        android:id="@+id/layoutShopItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- 뒤로가기 버튼 -->
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="start"
+            android:clickable="true"
+            android:contentDescription="@string/common_signin_button_text"
+            android:focusable="true"
+            android:src="@drawable/btn_x" />
+        <!-- 포인트 표시 -->
+        <TextView
+            android:id="@+id/user_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="포인트: 0"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 패키지 -->
+        <LinearLayout
+            android:id="@+id/itemPackage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="#FFE082"
+            android:padding="24dp"
+            android:elevation="4dp">
+
+            <TextView
+                android:id="@+id/tvItemName_package"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="패키지"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btnBuy_package"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_basic"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="구매"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+        <!-- 확률 업 -->
+        <LinearLayout
+            android:id="@+id/itemRateUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#DDDDDD"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvItemName_rateUp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="확률 업!"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnBuy_rateUp"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+        <!-- 자동 포획 -->
+        <LinearLayout
+            android:id="@+id/itemAutoCatch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#DDDDDD"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvItemName_autoCatch"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="자동 포획 5분"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnBuy_autoCatch"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+        <!-- 광고 제거 -->
+        <LinearLayout
+            android:id="@+id/itemRemoveAds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#DDDDDD"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvItemName_removeAds"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="광고 제거"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnBuy_removeAds"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+        <!-- 먼지 2배 생성 -->
+        <LinearLayout
+            android:id="@+id/itemDoubleMonster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#DDDDDD"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvItemName_doubleMonster"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="먼지 2배 생성"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnBuy_doubleMonster"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+        <!-- 달콤한 향기 -->
+        <LinearLayout
+            android:id="@+id/itemSweetSmell"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#DDDDDD"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvItemName_sweetSmell"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="달콤한 향기"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnBuy_sweetSmell"
+                style="@style/customButtonFontStyle"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:paddingTop="3dp"
+                android:background="@drawable/button_basic"
+                android:text="구매"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

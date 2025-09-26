@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,7 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Project_D">
         <activity
-            android:name=".MainActivity"
+            android:name=".RankingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BattleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GachaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingActivity"
+            android:exported="false" /> <!-- 앱 시작 시 가장 먼저 실행되는 메인 액티비티 -->
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +34,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ShopActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BagActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CharacterActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
